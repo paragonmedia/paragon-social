@@ -21,6 +21,7 @@ import { useSettings } from '@gitroom/frontend/components/launches/helpers/use.v
 import EventEmitter from 'events';
 import { useToaster } from '@gitroom/react/toaster/toaster';
 import clsx from 'clsx';
+import dayjs from 'dayjs';
 import { VideoFrame } from '@gitroom/react/helpers/video.frame';
 import { useUppyUploader } from '@gitroom/frontend/components/media/new.uploader';
 import dynamic from 'next/dynamic';
@@ -220,6 +221,8 @@ export const MediaBox: FC<{
 }> = ({ type, standalone, setMedia }) => {
   const [page, setPage] = useState(0);
   const [search, setSearch] = useState('');
+  // Paragon Social: the library page filters by kind (Todo / Imágenes / Videos)
+  const [kind, setKind] = useState<'image' | 'image-static' | 'video' | undefined>(type);
   const [debouncedSearch] = useDebounce(search, 300);
   const fetch = useFetch();
   const modals = useModals();
@@ -457,7 +460,12 @@ export const MediaBox: FC<{
       <button
         disabled={loading}
         onClick={() => uploaderRef?.current?.click()}
-        className="relative cursor-pointer bg-btnSimple changeColor flex gap-[8px] h-[44px] px-[18px] justify-center items-center rounded-[8px]"
+        className={clsx(
+          'relative cursor-pointer flex gap-[8px] h-[44px] px-[18px] justify-center items-center rounded-[12px] text-[14px] font-[600]',
+          standalone
+            ? 'bg-[#f93b4f] hover:bg-[#e2283c] text-white'
+            : 'bg-btnSimple changeColor'
+        )}
       >
         {loading ? (
           <div className="absolute left-[50%] top-[50%] -translate-y-[50%] -translate-x-[50%]">
@@ -466,10 +474,14 @@ export const MediaBox: FC<{
         ) : (
           <PlusIcon size={14} />
         )}
-        <div className={loading ? 'invisible' : undefined}>{t('upload', 'Upload')}</div>
+        <div className={loading ? 'invisible' : undefined}>
+          {standalone
+            ? t('paragon_upload_files', 'Upload files')
+            : t('upload', 'Upload')}
+        </div>
       </button>
     );
-  }, [t, loading]);
+  }, [t, loading, standalone]);
 
   return (
     <DropFiles disabled={loading} className="flex flex-col flex-1" onDrop={dragAndDrop}>
@@ -477,7 +489,8 @@ export const MediaBox: FC<{
         <div
           className={clsx(
             'flex items-center gap-[12px] mobile:flex-wrap',
-            !isLoading &&
+            !standalone &&
+              !isLoading &&
               !data?.results?.length &&
               !debouncedSearch &&
               'hidden'
@@ -489,7 +502,7 @@ export const MediaBox: FC<{
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={t('search_media_by_name', 'Search by file name')}
-              className="w-full h-[44px] px-[14px] rounded-[8px] bg-newBgColorInner border border-newColColor text-[14px] outline-none focus:border-[#FA3D4F]"
+              className="w-full h-[44px] px-[14px] rounded-[12px] bg-white border border-[#dfe1e5] text-[14px] text-[#111214] outline-none focus:border-[#111214] transition-colors"
             />
           </div>
           <input
@@ -521,6 +534,48 @@ export const MediaBox: FC<{
             </div>
           )}
         </div>
+        {standalone && (
+          <div className="flex flex-col gap-[16px] mt-[16px]">
+            <div role="group" aria-label={t('paragon_media_kind', 'Type')} className="flex gap-[8px]">
+              {(
+                [
+                  [undefined, t('paragon_media_all', 'All')],
+                  ['image', t('paragon_media_images', 'Images')],
+                  ['video', t('paragon_media_videos', 'Videos')],
+                ] as const
+              ).map(([value, label]) => (
+                <button
+                  key={label}
+                  type="button"
+                  onClick={() => setKind(value)}
+                  className={clsx(
+                    'h-[36px] px-[14px] rounded-full text-[13px] border transition-colors',
+                    kind === value
+                      ? 'bg-[#111214] border-[#111214] text-white font-[600]'
+                      : 'bg-white border-[#dfe1e5] text-[#5d616a] font-[500] hover:text-[#111214]'
+                  )}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={() => uploaderRef?.current?.click()}
+              className="border-[1.5px] border-dashed border-[#d6d8dc] hover:border-[#f93b4f] rounded-[20px] p-[28px] flex flex-col items-center gap-[6px] bg-white text-center transition-colors"
+            >
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#f93b4f" strokeWidth="2" aria-hidden="true">
+                <path d="M12 16V4M6 10l6-6 6 6M4 20h16" />
+              </svg>
+              <span className="font-[600] text-[#111214]">
+                {t('paragon_media_drop', 'Drag your files here')}
+              </span>
+              <span className="text-[13px] text-[#6b6f78]">
+                {t('paragon_media_formats', 'JPG, PNG, GIF or MP4 · up to 1 GB per upload')}
+              </span>
+            </button>
+          </div>
+        )}
         <div
           className={clsx(
             'w-full pointer-events-none relative mt-[5px] mb-[5px]',
@@ -546,20 +601,24 @@ export const MediaBox: FC<{
         <div
           className={clsx(
             'flex-1 relative',
-            !isLoading &&
+            !standalone &&
+              !isLoading &&
               !data?.results?.length &&
               'bg-newTextColor/[0.02] rounded-[12px]'
           )}
         >
           <div
             className={clsx(
-              'absolute -left-[3px] -top-[3px] withp3 h-full overflow-x-hidden overflow-y-auto scrollbar scrollbar-thumb-newColColor scrollbar-track-newBgColorInner mobile:-left-[6px] mobile:-top-[6px] mobile:!w-[calc(100%+12px)] mobile:!h-[calc(100%+12px)]',
-              !isLoading &&
+              standalone
+                ? 'grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-[14px] content-start'
+                : 'absolute -left-[3px] -top-[3px] withp3 h-full overflow-x-hidden overflow-y-auto scrollbar scrollbar-thumb-newColColor scrollbar-track-newBgColorInner mobile:-left-[6px] mobile:-top-[6px] mobile:!w-[calc(100%+12px)] mobile:!h-[calc(100%+12px)]',
+              !standalone &&
+                !isLoading &&
                 !data?.results?.length &&
                 'flex justify-center items-center gap-[20px] flex-col'
             )}
           >
-            {!isLoading && !data?.results?.length && (
+            {!standalone && !isLoading && !data?.results?.length && (
               <>
                 <NoMediaIcon />
                 <div className="text-[20px] font-[600]">
@@ -595,7 +654,9 @@ export const MediaBox: FC<{
                 {[...new Array(16)].map((_, i) => (
                   <div
                     className={clsx(
-                      'px-[3px] py-[3px] mobile:p-[6px] float-left rounded-[6px] cursor-pointer w8-max mobile:!w-1/2 mobile:!max-w-[50%] aspect-square'
+                      standalone
+                        ? 'aspect-square rounded-[16px] overflow-hidden'
+                        : 'px-[3px] py-[3px] mobile:p-[6px] float-left rounded-[6px] cursor-pointer w8-max mobile:!w-1/2 mobile:!max-w-[50%] aspect-square'
                     )}
                     key={i}
                   >
@@ -606,11 +667,11 @@ export const MediaBox: FC<{
             )}
             {data?.results
               ?.filter((f: any) => {
-                if (type === 'video') {
+                if (kind === 'video') {
                   return hasExtension(f.path, 'mp4');
-                } else if (type === 'image') {
+                } else if (kind === 'image') {
                   return !hasExtension(f.path, 'mp4');
-                } else if (type === 'image-static') {
+                } else if (kind === 'image-static') {
                   return ['jpg', 'jpeg', 'png'].some((ext) =>
                     hasExtension(f.path, ext)
                   );
@@ -620,14 +681,18 @@ export const MediaBox: FC<{
               .map((media: any) => (
                 <div
                   className={clsx(
-                    'group px-[3px] py-[3px] mobile:p-[6px] float-left rounded-[6px] w8-max mobile:!w-1/2 mobile:!max-w-[50%] aspect-square',
-                    !standalone && 'cursor-pointer'
+                    'group',
+                    standalone
+                      ? 'paragon-spot bg-white border border-[#eceef1] rounded-[16px] overflow-hidden'
+                      : 'px-[3px] py-[3px] mobile:p-[6px] float-left rounded-[6px] w8-max mobile:!w-1/2 mobile:!max-w-[50%] aspect-square cursor-pointer'
                   )}
                   key={media.id}
                 >
                   <div
                     className={clsx(
-                      'w-full h-full rounded-[6px] border-[4px] relative',
+                      standalone
+                        ? 'w-full aspect-square relative border-b border-[#eceef1]'
+                        : 'w-full h-full rounded-[6px] border-[4px] relative',
                       !!selected.find((p) => p.id === media.id)
                         ? 'border-[#FA3D4F]'
                         : 'border-transparent'
@@ -648,15 +713,22 @@ export const MediaBox: FC<{
                         onClick={deleteImage(media)}
                       />
                     )}
+                    {!standalone && (
+                      <div className="absolute bottom-[10px] start-[10px] end-[10px] z-[100] truncate text-end mobile:text-[12px] rounded-[4px] px-[6px] bg-black/60 text-white mobile:hidden">
+                        {media.originalName}
+                      </div>
+                    )}
+                    {standalone && hasExtension(media.path, 'mp4') && (
+                      <span className="absolute start-[10px] bottom-[10px] z-[30] px-[8px] py-[3px] rounded-full bg-[#111214]/70 text-white text-[11px] font-[600]">
+                        Video
+                      </span>
+                    )}
                     <div
                       className={clsx(
-                        'absolute bottom-[10px] start-[10px] end-[10px] z-[100] truncate text-end mobile:text-[12px] rounded-[4px] px-[6px] bg-black/60 text-white',
-                        !standalone && 'mobile:hidden'
+                        'w-full h-full overflow-hidden relative',
+                        !standalone && 'rounded-[6px]'
                       )}
                     >
-                      {media.originalName}
-                    </div>
-                    <div className="w-full h-full rounded-[6px] overflow-hidden relative">
                       <div className="absolute z-[20] left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%]">
                         <div
                           onClick={maximize(media)}
@@ -692,6 +764,21 @@ export const MediaBox: FC<{
                       )}
                     </div>
                   </div>
+                  {standalone && (
+                    <div className="px-[12px] py-[10px] flex flex-col gap-[2px]">
+                      <span className="text-[13px] font-[500] text-[#111214] truncate">
+                        {media.originalName || media.name}
+                      </span>
+                      <span className="text-[11.5px] text-[#6b6f78]">
+                        {hasExtension(media.path, 'mp4')
+                          ? t('paragon_media_video', 'Video')
+                          : t('paragon_media_image', 'Image')}
+                        {media.createdAt
+                          ? ` · ${dayjs(media.createdAt).format('D MMM YYYY')}`
+                          : ''}
+                      </span>
+                    </div>
+                  )}
                 </div>
               ))}
           </div>
