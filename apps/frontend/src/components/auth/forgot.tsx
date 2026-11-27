@@ -40,14 +40,21 @@ export function Forgot() {
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div>
-            <h1 className="text-3xl font-bold text-start mb-4 cursor-pointer">
-              {t('forgot_password_1', 'Forgot Password')}
+            <h1 className="font-heading m-0 text-[34px] font-[700] -tracking-[0.68px]">
+              {t('paragon_forgot_title', 'Forgot your password?')}
             </h1>
+            <p className="mt-[8px] mb-[18px] text-[15px] text-[#5d616a]">
+              {t(
+                'paragon_forgot_subtitle',
+                "Enter your account email and we'll send you a link to create a new one."
+              )}
+            </p>
           </div>
           {!state ? (
             <>
               <div className="space-y-4 text-textColor">
                 <Input
+                  className="!h-[48px] !rounded-[12px] !border-[#dfe1e5] !bg-white"
                   label="Email"
                   translationKey="label_email"
                   {...form.register('email')}
@@ -57,7 +64,7 @@ export function Forgot() {
               </div>
               <div className="text-center mt-6">
                 <div className="w-full flex">
-                  <Button type="submit" className="flex-1 !h-[52px] !rounded-[10px]" loading={loading}>
+                  <Button type="submit" className="flex-1 !h-[48px] !rounded-[12px] !bg-[#111214] !text-white text-[15px] font-[600]" loading={loading}>
                     {t(
                       'send_password_reset_email',
                       'Send Password Reset Email'

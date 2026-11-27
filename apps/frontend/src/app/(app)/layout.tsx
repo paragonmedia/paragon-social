@@ -6,7 +6,7 @@ import 'react-tooltip/dist/react-tooltip.css';
 import '@copilotkit/react-ui/styles.css';
 import LayoutContext from '@gitroom/frontend/components/layout/layout.context';
 import { ReactNode } from 'react';
-import { jakartaSans } from '@gitroom/frontend/fonts/plus-jakarta-sans/plus.jakarta.sans.font';
+import { jakartaSans, schibstedGrotesk } from '@gitroom/frontend/fonts/plus-jakarta-sans/plus.jakarta.sans.font';
 import PlausibleProvider from 'next-plausible';
 import clsx from 'clsx';
 import { VariableContextComponent } from '@gitroom/react/helpers/variable.context';
@@ -47,7 +47,12 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
       </head>
       <ChangeDirClient />
       <body
-        className={clsx(jakartaSans.className, mode, 'text-primary !bg-primary')}
+        className={clsx(
+          jakartaSans.className,
+          schibstedGrotesk.variable,
+          mode,
+          'text-primary !bg-primary'
+        )}
       >
         <VariableContextComponent
           storageProvider={

@@ -15,16 +15,29 @@ export default async function AuthLayout({
   return (
     <MantineWrapper>
       <Toaster />
-      <div className="bg-[#F4F2EF] flex flex-1 p-[12px] gap-[12px] min-h-screen w-screen text-[#141414]">
-        {/*<style>{`html, body {overflow-x: hidden;}`}</style>*/}
+      {/* Paragon Social: auth layout from the design (form left, pixel panel right) */}
+      <div className="flex flex-wrap min-h-screen w-screen bg-white text-[#111214]">
         <ReturnUrlComponent />
         <AttributionComponent />
-        <div className="flex flex-col py-[40px] px-[20px] flex-1 lg:w-[600px] lg:flex-none rounded-[12px] text-[#141414] p-[12px] bg-white border border-[#EBE7E2]">
-          <div className="w-full max-w-[440px] mx-auto justify-center gap-[20px] h-full flex flex-col text-[#141414]">
-            <LogoTextComponent />
-            <div className="flex">{children}</div>
+        <section className="flex flex-col justify-between gap-[40px] flex-[1_1_460px] px-[56px] py-[48px] mobile:px-[22px] mobile:py-[28px]">
+          <LogoTextComponent />
+          <div className="flex w-full max-w-[400px]">{children}</div>
+          <div className="flex flex-wrap gap-[18px] text-[12px] text-[#6b6f78]">
+            <span>© {new Date().getFullYear()} MEDIA PARAGON LLC</span>
+            <a
+              href="https://weareparagonmedia.com/privacy"
+              className="hover:text-[#111214]"
+            >
+              Privacidad
+            </a>
+            <a
+              href="https://weareparagonmedia.com/terms"
+              className="hover:text-[#111214]"
+            >
+              Términos
+            </a>
           </div>
-        </div>
+        </section>
         <ParagonPixelPanel />
       </div>
     </MantineWrapper>

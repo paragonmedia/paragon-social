@@ -1,7 +1,7 @@
 'use client';
 
 import React, { ReactNode, useCallback, useEffect, useState } from 'react';
-import { Logo } from '@gitroom/frontend/components/new-layout/logo';
+import { LogoTextComponent } from '@gitroom/frontend/components/ui/logo-text.component';
 import { jakartaSans } from '@gitroom/frontend/fonts/plus-jakarta-sans/plus.jakarta.sans.font';
 const ModeComponent = dynamic(
   () => import('@gitroom/frontend/components/layout/mode.component'),
@@ -119,9 +119,10 @@ export const LayoutComponent = ({ children }: { children: ReactNode }) => {
                         onClick={() => setMenuOpen(false)}
                       />
                     )}
+                    {/* Paragon Social: dark sidebar with labels, as in the design */}
                     <div
                       className={clsx(
-                        'flex flex-col bg-newBgColorInner w-[80px] rounded-[12px] mobile:fixed mobile:top-0 mobile:bottom-0 mobile:start-0 mobile:z-[491] mobile:rounded-none mobile:overflow-y-auto mobile:overflow-x-hidden',
+                        'flex flex-col bg-[#111214] text-white w-[248px] min-w-[248px] rounded-[14px] mobile:fixed mobile:top-0 mobile:bottom-0 mobile:start-0 mobile:z-[491] mobile:rounded-none mobile:overflow-y-auto mobile:overflow-x-hidden',
                         !menuOpen && 'mobile:hidden'
                       )}
                       onClick={() => setMenuOpen(false)}
@@ -129,21 +130,39 @@ export const LayoutComponent = ({ children }: { children: ReactNode }) => {
                       <div
                         id="left-menu"
                         className={clsx(
-                          'fixed h-full w-[64px] start-[20px] flex flex-1 top-0 mobile:static mobile:h-auto mobile:min-h-full mobile:mx-auto',
-                          user?.admin && 'pt-[52px] max-h-[1000px]:w-[500px]'
+                          'sticky top-[12px] h-[calc(100vh-24px)] flex flex-col gap-[28px] px-[16px] py-[24px] mobile:static mobile:h-auto mobile:min-h-full',
+                          user?.admin && 'pt-[52px]'
                         )}
                       >
-                        <div className="flex flex-col h-full gap-[32px] mobile:gap-[16px] flex-1 pt-[12px] pb-[20px] mobile:pb-[12px]">
-                          <div className="flex justify-center">
-                            <Logo />
-                          </div>
+                        <div className="px-[8px] text-white">
+                          <LogoTextComponent />
+                        </div>
+                        <div className="flex flex-col flex-1 gap-[2px]">
                           <TopMenu />
+                        </div>
+                        <div className="flex items-center gap-[10px] px-[8px] pt-[12px] border-t border-[#23262b]">
+                          <span className="w-[32px] h-[32px] min-w-[32px] rounded-full bg-[#f93b4f] flex items-center justify-center text-[13px] font-[600] uppercase">
+                            {(user?.name || user?.email || '?')
+                              .split(/[\s@.]+/)
+                              .filter(Boolean)
+                              .slice(0, 2)
+                              .map((w: string) => w[0])
+                              .join('')}
+                          </span>
+                          <div className="flex flex-col min-w-0 text-[13px]">
+                            <span className="truncate">
+                              {user?.name || user?.email}
+                            </span>
+                            <span className="text-[12px] text-[#9a9ea6] capitalize">
+                              {(user?.role || '').toLowerCase()}
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
-                    <div className="flex-1 min-w-0 bg-newBgLineColor rounded-[12px] overflow-hidden flex flex-col gap-[1px] blurMe">
+                    <div className="flex-1 min-w-0 bg-newBgLineColor rounded-[14px] border border-newBorder overflow-hidden flex flex-col gap-[1px] blurMe">
                       {/* relative: the notifications popup spans this bar on phones */}
-                      <div className="relative flex bg-newBgColorInner h-[80px] mobile:h-[64px] px-[20px] mobile:px-[12px] gap-[12px] items-center">
+                      <div className="relative flex bg-newBgColorInner h-[76px] mobile:h-[64px] px-[28px] mobile:px-[12px] gap-[12px] items-center">
                         <button
                           className="hidden mobile:flex items-center justify-center w-[36px] h-[36px] -ms-[6px] rounded-[8px] text-textItemBlur hover:text-newTextColor hover:bg-boxFocused"
                           onClick={() => setMenuOpen(true)}
@@ -164,7 +183,7 @@ export const LayoutComponent = ({ children }: { children: ReactNode }) => {
                             />
                           </svg>
                         </button>
-                        <div className="text-[24px] mobile:text-[20px] font-[600] flex flex-1 min-w-0">
+                        <div className="font-heading text-[26px] mobile:text-[20px] font-[600] flex flex-1 min-w-0">
                           <Title />
                         </div>
                         <div className="flex gap-[20px] mobile:gap-[14px] mobile:items-center text-textItemBlur">

@@ -13,17 +13,25 @@ export const MenuItem: FC<{ label: string; icon: ReactNode; path: string; onClic
   const currentPath = usePathname();
   const isActive = currentPath.indexOf(path) === 0;
 
+  // Paragon Social: rows with icon + label on the dark sidebar
   const className = clsx(
-    'group w-full minCustom:h-[54px] custom:h-[44px] py-[8px] px-[6px] minCustom:gap-[4px] custom:gap-[2px] flex flex-col font-[600] items-center justify-center rounded-[12px] hover:text-textItemFocused hover:bg-boxFocused transition-colors',
-    isActive ? 'text-textItemFocused bg-boxFocused' : 'text-textItemBlur'
+    'group w-full h-[44px] px-[12px] gap-[12px] flex items-center rounded-[10px] text-[14px] transition-colors mobile:h-[40px]',
+    isActive
+      ? 'bg-[#1f2126] text-white font-[500]'
+      : 'text-[#c6c9cf] hover:bg-[#1b1d21] hover:text-white'
   );
 
   const inner = (
     <>
-      <div className="custom:scale-90 transition-transform">{icon}</div>
-      <div className="custom:text-[9px] minCustom:text-[10px] leading-[1.1] text-center">
-        {label}
+      <div
+        className={clsx(
+          'flex items-center justify-center w-[20px] h-[20px] [&_svg]:max-w-[20px] [&_svg]:max-h-[20px]',
+          isActive && 'text-[#f93b4f]'
+        )}
+      >
+        {icon}
       </div>
+      <div className="truncate">{label}</div>
     </>
   );
 

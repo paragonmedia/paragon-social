@@ -20,6 +20,14 @@ body * {
   outline: none !important;
 }
 
+/* Paragon Social: titles use Schibsted Grotesk */
+h1,
+h2,
+.font-heading {
+  font-family: var(--font-heading), var(--font-geist), system-ui, sans-serif;
+  letter-spacing: -0.015em;
+}
+
 .box {
   position: relative;
 }

@@ -169,9 +169,15 @@ export function RegisterAfter({
       <form className="flex-1 flex" onSubmit={form.handleSubmit(onSubmit)}>
         <div className="flex flex-col flex-1">
           <div>
-            <h1 className="text-[40px] font-[500] -tracking-[0.8px] text-start cursor-pointer">
-              {t('sign_up', 'Sign Up')}
+            <h1 className="font-heading m-0 text-[34px] font-[700] -tracking-[0.68px]">
+              {t('paragon_register_title', 'Create your account')}
             </h1>
+            <p className="mt-[8px] text-[15px] text-[#5d616a]">
+              {t(
+                'paragon_register_subtitle',
+                'Invitation only, from your Paragon team.'
+              )}
+            </p>
           </div>
           <div className="flex flex-col text-[14px] mt-[32px]">
             <div className="flex flex-col gap-[12px]">
@@ -179,6 +185,7 @@ export function RegisterAfter({
                 {!isAfterProvider && (
                   <>
                     <Input
+                      className="!h-[48px] !rounded-[12px] !border-[#dfe1e5] !bg-white"
                       label="Email"
                       translationKey="label_email"
                       {...form.register('email')}
@@ -186,6 +193,7 @@ export function RegisterAfter({
                       placeholder={t('email_address', 'Email Address')}
                     />
                     <Input
+                      className="!h-[48px] !rounded-[12px] !border-[#dfe1e5] !bg-white"
                       label="Password"
                       translationKey="label_password"
                       {...form.register('password')}
@@ -197,6 +205,7 @@ export function RegisterAfter({
                 )}
                 {!invited && (
                   <Input
+                    className="!h-[48px] !rounded-[12px] !border-[#dfe1e5] !bg-white"
                     label="Company"
                     translationKey="label_company"
                     {...form.register('company')}
@@ -234,7 +243,7 @@ export function RegisterAfter({
                 <div className="w-full flex">
                   <Button
                     type="submit"
-                    className="flex-1 rounded-[10px] !h-[52px]"
+                    className="flex-1 !h-[48px] !rounded-[12px] !bg-[#111214] !text-white text-[15px] font-[600]"
                     loading={loading}
                   >
                     {t('create_account', 'Create Account')}

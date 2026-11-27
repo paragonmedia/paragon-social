@@ -69,93 +69,92 @@ export function Login() {
   return (
     <FormProvider {...form}>
       <form className="flex-1 flex" onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="flex flex-col flex-1">
+        {/* Paragon Social: login from the design, email first and Google below */}
+        <div className="flex flex-col flex-1 gap-[18px]">
           <div>
-            <h1 className="text-[40px] font-[500] -tracking-[0.8px] text-start cursor-pointer">
-              {t('sign_in', 'Sign In')}
+            <h1 className="font-heading m-0 text-[34px] font-[700] -tracking-[0.68px]">
+              {t('paragon_login_title', 'Welcome back')}
             </h1>
-          </div>
-          <div className="flex flex-col mt-[32px]">
-            <div className="flex flex-col gap-[12px]">
-              <div className="text-textColor">
-                <Input
-                  label="Email"
-                  translationKey="label_email"
-                  {...form.register('email')}
-                  type="email"
-                  placeholder={t('email_address', 'Email Address')}
-                />
-                <Input
-                  label="Password"
-                  translationKey="label_password"
-                  {...form.register('password')}
-                  autoComplete="off"
-                  type="password"
-                  placeholder={t('label_password', 'Password')}
-                />
-              </div>
-              {notActivated && (
-                <div className="bg-amber-500/10 border border-amber-500/30 rounded-[10px] p-4 mb-4">
-                  <p className="text-amber-400 text-sm mb-2">
-                    {t(
-                      'account_not_activated',
-                      'Your account is not activated yet. Please check your email for the activation link.'
-                    )}
-                  </p>
-                  <Link
-                    href="/auth/activate"
-                    className="text-amber-400 underline hover:font-bold text-sm"
-                  >
-                    {t('resend_activation_email', 'Resend Activation Email')}
-                  </Link>
-                </div>
+            <p className="mt-[8px] text-[15px] text-[#5d616a]">
+              {t(
+                'paragon_login_subtitle',
+                'Sign in to plan and publish the content of your brands.'
               )}
-              <div className="text-center mt-6">
-                <div className="w-full flex">
-                  <Button
-                    type="submit"
-                    className="flex-1 rounded-[10px] !h-[52px]"
-                    loading={loading}
-                  >
-                    {t('sign_in_1', 'Sign in')}
-                  </Button>
-                </div>
-              </div>
-            </div>
-            <div className="h-[20px] mb-[24px] mt-[24px] relative">
-              <div className="absolute w-full h-[1px] bg-fifth top-[50%] -translate-y-[50%]" />
-              <div
-                className={`absolute z-[1] justify-center items-center w-full start-0 -top-[4px] flex`}
-              >
-                <div className="px-[16px]">{t('or', 'or')}</div>
-              </div>
-            </div>
-            <div className="text-[14px] mb-[12px]">
-              {t('continue_with', 'Continue With')}
-            </div>
-            {isGeneral && genericOauth ? (
-              <OauthProvider />
-            ) : !isGeneral ? (
-              <GithubProvider />
-            ) : (
-              <div className="gap-[8px] flex">
-                <GoogleProvider />
-                {!!appleClientId && <AppleProvider />}
-                {!!neynarClientId && <FarcasterProvider />}
-                {billingEnabled && <WalletProvider />}
-              </div>
-            )}
-            <div className="text-center">
-              <p className="mt-4 text-sm">
-                <Link
-                  href="/auth/forgot"
-                  className="underline hover:font-bold cursor-pointer"
-                >
-                  {t('forgot_password', 'Forgot password')}
-                </Link>
-              </p>
-            </div>
+            </p>
           </div>
+          <div className="flex flex-col">
+            <Input
+              label="Email"
+              translationKey="label_email"
+              {...form.register('email')}
+              type="email"
+              className="!h-[48px] !rounded-[12px] !border-[#dfe1e5] !bg-white"
+              placeholder={t('paragon_email_placeholder', 'you@company.com')}
+            />
+            <Input
+              label="Password"
+              translationKey="label_password"
+              {...form.register('password')}
+              autoComplete="off"
+              type="password"
+              className="!h-[48px] !rounded-[12px] !border-[#dfe1e5] !bg-white"
+              placeholder="••••••••"
+            />
+          </div>
+          <div className="flex justify-end -mt-[18px] text-[13px]">
+            <Link
+              href="/auth/forgot"
+              className="text-[#d42a3e] hover:text-[#a81f30]"
+            >
+              {t('paragon_forgot_link', 'Forgot your password?')}
+            </Link>
+          </div>
+          {notActivated && (
+            <div className="bg-amber-500/10 border border-amber-500/30 rounded-[12px] p-4">
+              <p className="text-amber-700 text-sm mb-2">
+                {t(
+                  'account_not_activated',
+                  'Your account is not activated yet. Please check your email for the activation link.'
+                )}
+              </p>
+              <Link
+                href="/auth/activate"
+                className="text-amber-700 underline hover:font-bold text-sm"
+              >
+                {t('resend_activation_email', 'Resend Activation Email')}
+              </Link>
+            </div>
+          )}
+          <Button
+            type="submit"
+            className="w-full rounded-[12px] !h-[48px] !bg-[#111214] !text-white text-[15px] font-[600]"
+            loading={loading}
+          >
+            {t('sign_in_1', 'Sign in')}
+          </Button>
+          <div className="flex items-center gap-[12px] text-[12px] text-[#6b6f78]">
+            <div className="flex-1 h-[1px] bg-[#e6e8eb]" />
+            {t('or', 'or')}
+            <div className="flex-1 h-[1px] bg-[#e6e8eb]" />
+          </div>
+          {isGeneral && genericOauth ? (
+            <OauthProvider />
+          ) : !isGeneral ? (
+            <GithubProvider />
+          ) : (
+            <div className="gap-[8px] flex">
+              <GoogleProvider />
+              {!!appleClientId && <AppleProvider />}
+              {!!neynarClientId && <FarcasterProvider />}
+              {billingEnabled && <WalletProvider />}
+            </div>
+          )}
+          <p className="m-0 text-[12px] text-[#6b6f78]">
+            {t(
+              'paragon_login_client_note',
+              'Are you a Paragon client? Your account team gives you access.'
+            )}
+          </p>
         </div>
       </form>
     </FormProvider>

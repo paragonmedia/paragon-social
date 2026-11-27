@@ -937,5 +937,14 @@
   "connect_link_expired_description": "Los enlaces de conexión funcionan durante una hora. Pide uno nuevo a quien te lo envió.",
   "paragon_auth_badge": "Agencia de crecimiento con IA · USA · MX",
   "paragon_auth_headline": "Todas tus redes, un solo calendario.",
-  "paragon_auth_body": "Planea, aprueba y publica en Facebook, Instagram, LinkedIn y más, para tu marca y para tus clientes."
+  "paragon_auth_body": "Planea, aprueba y publica en Facebook, Instagram, LinkedIn y más, para tu marca y para tus clientes.",
+  "paragon_login_title": "Bienvenido de vuelta",
+  "paragon_login_subtitle": "Entra para planear y publicar el contenido de tus marcas.",
+  "paragon_email_placeholder": "tu@empresa.com",
+  "paragon_forgot_link": "¿Olvidaste tu contraseña?",
+  "paragon_login_client_note": "¿Eres cliente de Paragon? Tu acceso te lo da tu equipo de cuenta.",
+  "paragon_forgot_title": "¿Olvidaste tu contraseña?",
+  "paragon_forgot_subtitle": "Escribe el correo de tu cuenta y te mandamos un enlace para crear una nueva.",
+  "paragon_register_title": "Crea tu cuenta",
+  "paragon_register_subtitle": "Solo con invitación de tu equipo de Paragon."
 }

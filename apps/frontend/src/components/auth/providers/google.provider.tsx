@@ -13,7 +13,7 @@ export const GoogleProvider = () => {
   return (
     <div
       onClick={gotoLogin}
-      className={`cursor-pointer flex-1 bg-white h-[52px] rounded-[10px] flex justify-center items-center text-[#0E0E0E] gap-[5px]`}
+      className={`cursor-pointer flex-1 bg-white h-[48px] rounded-[12px] border border-[#dfe1e5] hover:bg-[#f6f7f8] flex justify-center items-center text-[#111214] gap-[5px]`}
     >
       <div>
         <svg

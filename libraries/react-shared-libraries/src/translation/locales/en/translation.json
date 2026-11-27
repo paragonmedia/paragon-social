@@ -937,5 +937,14 @@
   "connect_link_expired_description": "Connection links work for one hour. Ask whoever sent it to you for a new one.",
   "paragon_auth_badge": "AI growth agency · USA · MX",
   "paragon_auth_headline": "All your channels, one calendar.",
-  "paragon_auth_body": "Plan, approve and publish on Facebook, Instagram, LinkedIn and more, for your brand and for your clients."
+  "paragon_auth_body": "Plan, approve and publish on Facebook, Instagram, LinkedIn and more, for your brand and for your clients.",
+  "paragon_login_title": "Welcome back",
+  "paragon_login_subtitle": "Sign in to plan and publish the content of your brands.",
+  "paragon_email_placeholder": "you@company.com",
+  "paragon_forgot_link": "Forgot your password?",
+  "paragon_login_client_note": "Are you a Paragon client? Your account team gives you access.",
+  "paragon_forgot_title": "Forgot your password?",
+  "paragon_forgot_subtitle": "Enter your account email and we'll send you a link to create a new one.",
+  "paragon_register_title": "Create your account",
+  "paragon_register_subtitle": "Invitation only, from your Paragon team."
 }
