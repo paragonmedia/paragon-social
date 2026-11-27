@@ -20,6 +20,53 @@ body * {
   outline: none !important;
 }
 
+/* Paragon Social: coral spotlight that follows the mouse on cards (design ".spot") */
+.paragon-spot {
+  position: relative;
+  isolation: isolate;
+}
+.paragon-spot::before,
+.paragon-spot::after {
+  content: '';
+  position: absolute;
+  border-radius: inherit;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.paragon-spot::before {
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(
+    320px circle at var(--x, 50%) var(--y, 50%),
+    rgba(249, 59, 79, 0.09),
+    transparent 70%
+  );
+}
+.paragon-spot::after {
+  inset: -1px;
+  padding: 1px;
+  background: radial-gradient(
+    320px circle at var(--x, 50%) var(--y, 50%),
+    rgba(249, 59, 79, 0.6),
+    transparent 60%
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+.paragon-spot:hover::before,
+.paragon-spot:hover::after {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .paragon-spot::before,
+  .paragon-spot::after {
+    transition: none;
+  }
+}
+
 /* Paragon Social: titles use Schibsted Grotesk */
 h1,
 h2,

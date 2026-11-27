@@ -946,5 +946,19 @@
   "paragon_forgot_title": "¿Olvidaste tu contraseña?",
   "paragon_forgot_subtitle": "Escribe el correo de tu cuenta y te mandamos un enlace para crear una nueva.",
   "paragon_register_title": "Crea tu cuenta",
-  "paragon_register_subtitle": "Solo con invitación de tu equipo de Paragon."
+  "paragon_register_subtitle": "Solo con invitación de tu equipo de Paragon.",
+  "paragon_space": "Espacio",
+  "paragon_connect_channel": "Conectar canal",
+  "paragon_list_subtitle": "Todas tus publicaciones en lista",
+  "paragon_timezone_of": "Hora de",
+  "paragon_view": "Vista",
+  "paragon_previous": "Anterior",
+  "paragon_next": "Siguiente",
+  "paragon_new_post": "Nueva publicación",
+  "paragon_stat_scheduled": "Programadas",
+  "paragon_stat_drafts": "Borradores",
+  "paragon_stat_published": "Publicadas",
+  "paragon_stat_channels": "Canales conectados",
+  "paragon_summary": "Resumen",
+  "paragon_failed": "Con error"
 }

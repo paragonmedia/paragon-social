@@ -1,4 +1,5 @@
-export const fallbackLng = 'en';
+// Paragon Social: Spanish by default (anyone can switch with the language flag)
+export const fallbackLng = 'es';
 export const languages = [
   fallbackLng,
   'he',

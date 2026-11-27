@@ -8,7 +8,7 @@ import { SetSelectionModal } from '@gitroom/frontend/components/launches/calenda
 import { AddEditModal } from '@gitroom/frontend/components/new-launch/add.edit.modal';
 import { ModalWrapperComponent } from '@gitroom/frontend/components/new-launch/modal.wrapper.component';
 
-export const NewPost = () => {
+export const useCreatePost = () => {
   const fetch = useFetch();
   const modal = useModals();
   const { integrations, reloadCalendarView, sets } = useCalendar();
@@ -74,6 +74,12 @@ export const NewPost = () => {
       title: ``,
     });
   }, [integrations, sets]);
+  return createAPost;
+};
+
+export const NewPost = () => {
+  const t = useT();
+  const createAPost = useCreatePost();
   return (
     <button
       onClick={createAPost}

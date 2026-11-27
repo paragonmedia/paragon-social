@@ -13,7 +13,7 @@ import { BottomSheet } from '@gitroom/frontend/components/ui/bottom.sheet.compon
 import { FilterIcon } from '@gitroom/frontend/components/ui/icons';
 
 // Helper function to get start and end dates based on display type
-function getDateRange(
+export function getDateRange(
   display: 'day' | 'week' | 'month' | 'list',
   referenceDate?: string
 ) {

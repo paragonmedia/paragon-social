@@ -8,6 +8,10 @@ import {
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { capitalize, groupBy, orderBy } from 'lodash';
 import { CalendarWeekProvider } from '@gitroom/frontend/components/launches/calendar.context';
+import {
+  ParagonCalendarHeader,
+  ParagonCalendarStats,
+} from '@gitroom/frontend/components/launches/paragon.calendar.header';
 import { Filters } from '@gitroom/frontend/components/launches/filters';
 import { useFetch } from '@gitroom/helpers/utils/custom.fetch';
 import { LoadingComponent } from '@gitroom/frontend/components/layout/loading';
@@ -481,7 +485,15 @@ export const LaunchesComponent = () => {
   const modal = useModals();
   const [reload, setReload] = useState(false);
   const [collapseMenu, setCollapseMenu] = useCookie('collapseMenu', '0');
-  const [channelsOpen, setChannelsOpen] = useState(false);
+  // Paragon Social: the channels panel opens as a drawer (sidebar "Canales")
+  const [channelsOpen, setChannelsOpen] = useState(
+    search.get('channels') === 'open'
+  );
+  useEffect(() => {
+    if (search.get('channels') === 'open') {
+      setChannelsOpen(true);
+    }
+  }, [search]);
   const [mode] = useCookie('mode', 'light');
   const { isLoading, data: integrations, mutate } = useIntegrationList();
 
@@ -654,19 +666,16 @@ export const LaunchesComponent = () => {
       <CalendarWeekProvider integrations={sortedIntegrations}>
         {channelsOpen && (
           <div
-            className="hidden mobile:block fixed inset-0 bg-newBackdrop opacity-60 z-[149]"
+            className="fixed inset-0 bg-[#111214]/40 z-[149]"
             onClick={() => setChannelsOpen(false)}
           />
         )}
         <div
           className={clsx(
             'flex relative flex-col',
-            collapseMenu === '1' && !channelsOpen
-              ? 'group sidebar w-[100px]'
-              : 'w-[260px]',
             channelsOpen
-              ? 'mobile:fixed mobile:inset-x-0 mobile:bottom-0 mobile:z-[150] mobile:w-full mobile:max-h-[80vh] mobile:rounded-t-[16px] mobile:overflow-hidden'
-              : 'mobile:hidden'
+              ? 'fixed top-0 bottom-0 start-[248px] z-[150] w-[300px] shadow-[0_20px_60px_rgba(17,18,20,.25)] mobile:start-0 mobile:top-auto mobile:inset-x-0 mobile:bottom-0 mobile:w-full mobile:max-h-[80vh] mobile:rounded-t-[16px] mobile:overflow-hidden'
+              : 'hidden'
           )}
         >
           <div
@@ -778,7 +787,7 @@ export const LaunchesComponent = () => {
             </div>
           </div>
         </div>
-        <div className="bg-newBgColorInner flex-1 min-w-0 flex-col flex p-[20px] mobile:p-[12px] gap-[12px] mobile:min-h-[600px]">
+        <main className="flex-1 min-w-0 flex-col flex px-[32px] pt-[28px] pb-[40px] mobile:p-[16px] gap-[24px] mobile:min-h-[600px]">
           <div className="hidden mobile:flex gap-[8px]">
             <div
               onClick={() => setChannelsOpen(true)}
@@ -812,11 +821,12 @@ export const LaunchesComponent = () => {
               </div>
             )}
           </div>
-          <Filters />
-          <div className="flex-1 flex">
+          <ParagonCalendarHeader />
+          <ParagonCalendarStats />
+          <section className="flex-1 flex min-h-[560px] bg-white border border-[#eceef1] rounded-[20px] overflow-hidden">
             <Calendar />
-          </div>
-        </div>
+          </section>
+        </main>
       </CalendarWeekProvider>
     </DNDProvider>
   );
