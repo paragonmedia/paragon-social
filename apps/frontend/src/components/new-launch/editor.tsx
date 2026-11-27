@@ -426,7 +426,7 @@ export const EditorWrapper: FC<{
       </div>
       {!!internal && !existingData?.integration && (
         <div
-          className="mt-[12px] flex gap-[20px] items-center cursor-pointer select-none mobile:mt-0 mobile:w-[40px] mobile:h-[40px] mobile:justify-center mobile:rounded-[8px] mobile:bg-btnSimple"
+          className="mt-[12px] flex gap-[20px] items-center cursor-pointer select-none mobile:mt-0 mobile:w-[40px] mobile:h-[40px] mobile:justify-center mobile:rounded-[12px] mobile:bg-white mobile:border mobile:border-[#dfe1e5]"
           onClick={goBackToGlobal}
         >
           <div className="flex gap-[6px] items-center mobile:hidden">
@@ -1115,7 +1115,7 @@ export const Editor: FC<{
                       flat
                         ? active
                           ? clsx(
-                              'post-toolbar mobile:fixed mobile:bottom-0 mobile:inset-x-0 mobile:items-center mobile:px-[16px] mobile:py-[12px] mobile:bg-newBgColorInner',
+                              'post-toolbar mobile:fixed mobile:bottom-0 mobile:inset-x-0 mobile:items-center mobile:px-[16px] mobile:py-[12px] mobile:bg-white mobile:border-t mobile:border-[#eceef1]',
                               // the picker opens from the bar and has to cover the top bar
                               emojiPickerOpen ? 'mobile:z-[500]' : 'mobile:z-[440]'
                             )

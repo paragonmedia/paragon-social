@@ -1282,7 +1282,7 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
                         <>
                           <div
                             onClick={() => setMobileSheet('channels')}
-                            className="hidden mobile:flex shrink-0 w-[44px] h-[44px] rounded-[8px] bg-btnSimple justify-center items-center cursor-pointer"
+                            className="hidden mobile:flex shrink-0 w-[44px] h-[44px] rounded-[12px] bg-white border border-[#dfe1e5] text-[#111214] justify-center items-center cursor-pointer"
                           >
                             <PlusIcon size={24} />
                           </div>

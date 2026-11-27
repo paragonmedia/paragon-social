@@ -139,8 +139,8 @@ export const SettingsPopup: FC<{
           )}
         </p>
       </header>
-      <div className="flex items-start gap-[24px] mobile:flex-col">
-      <nav className="w-[200px] shrink-0 flex flex-col gap-[2px] sticky top-[24px] mobile:static mobile:w-full mobile:flex-row mobile:overflow-x-auto mobile:pb-[6px]">
+      <div className="flex items-start gap-[24px] mobile:flex-col mobile:items-stretch">
+      <nav className="w-[200px] shrink-0 flex flex-col gap-[2px] sticky top-[24px] mobile:static mobile:w-full mobile:flex-row mobile:items-center mobile:overflow-x-auto mobile:pb-[6px]">
           {list.map(({ tab: tabKey, label }) => (
             <button
               type="button"
@@ -157,7 +157,7 @@ export const SettingsPopup: FC<{
             </button>
           ))}
           {showLogout && (
-            <div className="mt-[16px] px-[14px] text-[14px] mobile:mt-0">
+            <div className="mt-[16px] px-[14px] text-[14px] mobile:mt-0 mobile:shrink-0 mobile:whitespace-nowrap">
               <LogoutComponent />
             </div>
           )}

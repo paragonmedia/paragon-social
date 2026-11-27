@@ -961,6 +961,17 @@ html[dir='rtl'] [dir='ltr'] {
     padding: 16px !important;
     border-top: 1px solid #f1f2f4;
   }
+  @media (max-width: 1025px) {
+    .copilotKitMessages {
+      padding: 12px !important;
+    }
+    .copilotKitMessages > div {
+      padding: 4px !important;
+    }
+    .copilotKitInputContainer {
+      padding: 12px !important;
+    }
+  }
   .copilotKitInput {
     border: 1px solid #dfe1e5 !important;
     border-radius: 14px !important;
@@ -984,7 +995,9 @@ html[dir='rtl'] [dir='ltr'] {
 }
 
 /* Paragon Social: no third-party badge in the assistant panels */
-.poweredByContainer,
 .poweredBy {
   display: none !important;
+}
+.poweredByContainer {
+  padding-bottom: 16px !important;
 }

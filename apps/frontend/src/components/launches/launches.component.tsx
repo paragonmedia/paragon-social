@@ -802,7 +802,7 @@ export const LaunchesComponent = () => {
           <div className="hidden mobile:flex gap-[8px]">
             <div
               onClick={() => setChannelsOpen(true)}
-              className="cursor-pointer h-[44px] px-[12px] bg-btnSimple text-btnText rounded-[8px] flex items-center gap-[8px] select-none"
+              className="cursor-pointer h-[44px] px-[12px] bg-white border border-[#dfe1e5] text-[#111214] rounded-[12px] flex items-center gap-[8px] select-none"
             >
               <div className="flex -space-x-[10px] rtl:space-x-reverse">
                 {sortedIntegrations.slice(0, 3).map((integration: any) => (
@@ -810,7 +810,7 @@ export const LaunchesComponent = () => {
                     key={integration.id}
                     fallbackSrc={`/icons/platforms/${integration.identifier}.png`}
                     src={integration.picture}
-                    className="rounded-full border-2 border-btnSimple"
+                    className="rounded-full border-2 border-white"
                     alt={integration.identifier}
                     width={24}
                     height={24}

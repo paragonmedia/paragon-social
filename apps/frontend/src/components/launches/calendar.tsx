@@ -570,7 +570,7 @@ export const WeekView = () => {
           ref={scroller}
           className="absolute inset-0 overflow-auto scrollbar scrollbar-thumb-fifth scrollbar-track-newBgColor"
         >
-          <div className="grid [grid-template-columns:64px_repeat(7,_minmax(120px,_1fr))] min-w-[940px] relative">
+          <div className="grid [grid-template-columns:64px_repeat(7,_minmax(120px,_1fr))] min-w-[940px] max-[640px]:[grid-template-columns:52px_repeat(7,_minmax(92px,_1fr))] max-[640px]:min-w-[700px] relative">
             <div className="sticky top-0 z-[20] bg-white border-b border-[#eceef1]" />
             {localizedDays.map((day) => {
               const isToday = day.day === today;

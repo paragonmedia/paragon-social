@@ -194,8 +194,9 @@ export const LayoutComponent = ({ children }: { children: ReactNode }) => {
                             />
                           </svg>
                         </button>
-                        <div className="font-heading text-[18px] font-[600] flex-1 min-w-0">
-                          <Title />
+                        {/* designed pages carry their own heading, the bar shows the brand */}
+                        <div className="font-heading text-[18px] font-[600] flex-1 min-w-0 truncate [&>svg]:h-[20px] [&>svg]:w-auto">
+                          {isDesignedPage ? <LogoTextComponent /> : <Title />}
                         </div>
                         <NotificationComponent />
                       </div>

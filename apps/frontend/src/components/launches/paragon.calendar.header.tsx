@@ -145,7 +145,7 @@ export const ParagonCalendarHeader: FC = () => {
           ))}
         </div>
         {display !== 'list' && (
-          <>
+          <div className="flex items-center gap-[10px]">
             <button
               type="button"
               onClick={move(-1)}
@@ -169,7 +169,7 @@ export const ParagonCalendarHeader: FC = () => {
             >
               ›
             </button>
-          </>
+          </div>
         )}
         <div className="contents [&>*]:h-[44px]">
           <SelectCustomer
@@ -190,7 +190,7 @@ export const ParagonCalendarHeader: FC = () => {
           <button
             type="button"
             onClick={createPost}
-            className="inline-flex items-center gap-[8px] h-[44px] px-[20px] rounded-[12px] bg-[#f93b4f] hover:bg-[#e2283c] text-white text-[14px] font-[600] transition-colors"
+            className="inline-flex items-center gap-[8px] h-[44px] px-[20px] rounded-[12px] bg-[#f93b4f] hover:bg-[#e2283c] text-white text-[14px] font-[600] transition-colors mobile:hidden"
           >
             + {t('paragon_new_post', 'New post')}
           </button>
@@ -233,16 +233,16 @@ export const ParagonCalendarStats: FC = () => {
   return (
     <section
       aria-label={t('paragon_summary', 'Summary')}
-      className="grid grid-cols-4 tablet:grid-cols-2 gap-[16px]"
+      className="grid grid-cols-4 max-[640px]:grid-cols-2 gap-[16px] max-[640px]:gap-[10px]"
     >
       {stats.map((stat) => (
         <div
           key={stat.label}
           onPointerMove={spot}
-          className="paragon-spot bg-white border border-[#eceef1] rounded-[16px] px-[20px] py-[18px] flex flex-col gap-[6px]"
+          className="paragon-spot bg-white border border-[#eceef1] rounded-[16px] px-[20px] py-[18px] max-[640px]:px-[14px] max-[640px]:py-[12px] flex flex-col gap-[6px] max-[640px]:gap-[2px]"
         >
           <span className="text-[13px] text-[#5d616a]">{stat.label}</span>
-          <span className="font-heading font-[600] text-[28px] -tracking-[0.56px] text-[#111214]">
+          <span className="font-heading font-[600] text-[28px] max-[640px]:text-[22px] -tracking-[0.56px] text-[#111214]">
             {stat.value}
           </span>
         </div>
