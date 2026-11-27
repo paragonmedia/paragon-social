@@ -110,10 +110,10 @@ export const ThirdPartyComponent = () => {
   return (
     <div className="flex flex-col gap-[20px]">
       <div className="flex flex-col">
-        <h3 className="text-[20px]">{t('integrations', 'Integrations')}</h3>
+        <h3 className="m-0 font-heading text-[18px] font-[600] text-[#111214]">{t('integrations', 'Integrations')}</h3>
       </div>
       {!isLoading && (
-        <div className="bg-sixth border-fifth border rounded-[4px] p-[24px]">
+        <div className="bg-white border-[#eceef1] border rounded-[16px] p-[20px]">
           {!data?.length ? (
             <div className="text-customColor18">No Integrations Yet</div>
           ) : (

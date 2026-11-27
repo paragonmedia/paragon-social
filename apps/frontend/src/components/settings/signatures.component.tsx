@@ -60,14 +60,14 @@ export const SignaturesComponent: FC<{
 
   return (
     <div className="flex flex-col">
-      <h3 className="text-[20px]">{t('signatures', 'Signatures')}</h3>
+      <h3 className="m-0 font-heading text-[18px] font-[600] text-[#111214]">{t('signatures', 'Signatures')}</h3>
       <div className="text-customColor18 mt-[4px]">
         {t(
           'you_can_add_signatures_to_your_account_to_be_used_in_your_posts',
           'You can add signatures to your account to be used in your posts.'
         )}
       </div>
-      <div className="my-[16px] mt-[16px] bg-sixth border-fifth items-center border rounded-[4px] p-[24px] mobile:p-[12px] flex gap-[24px]">
+      <div className="my-[16px] mt-[16px] bg-white border-[#eceef1] items-center border rounded-[16px] p-[20px] mobile:p-[12px] flex gap-[24px]">
         <div className="flex flex-col w-full">
           {!!data?.length && (
             <div

@@ -991,5 +991,6 @@
   "paragon_menu_create": "Crear",
   "paragon_menu_library": "Biblioteca",
   "paragon_menu_agent": "Agente IA",
-  "paragon_menu_settings": "Ajustes"
+  "paragon_menu_settings": "Ajustes",
+  "paragon_settings_subtitle": "Cuenta, equipo e integraciones de tu espacio"
 }

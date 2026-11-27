@@ -62,7 +62,7 @@ export const Input: FC<
       )}
       <div
         className={clsx(
-          'bg-newBgColorInner h-[42px] border-newTableBorder border rounded-[8px] text-textColor placeholder-textColor flex items-center justify-center',
+          'bg-white h-[44px] border-[#dfe1e5] border rounded-[12px] text-textColor placeholder-textColor flex items-center justify-center focus-within:border-[#111214] transition-colors',
           className
         )}
       >
@@ -70,7 +70,7 @@ export const Input: FC<
         <input
           className={clsx(
             'h-full bg-transparent outline-none flex-1 text-[14px] text-textColor',
-            icon ? 'pl-[8px] pe-[16px]' : 'px-[16px]'
+            icon ? 'pl-[8px] pe-[14px]' : 'px-[14px]'
           )}
           {...(disableForm ? {} : form.register(props.name))}
           {...rest}

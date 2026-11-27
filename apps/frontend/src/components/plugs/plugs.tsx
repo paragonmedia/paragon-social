@@ -91,10 +91,10 @@ export const Plugs = () => {
   return (
     <div className="flex flex-col gap-[20px]">
       <div className="flex flex-col">
-        <h3 className="text-[20px]">{t('plugs', 'Plugs')}</h3>
+        <h3 className="m-0 font-heading text-[18px] font-[600] text-[#111214]">{t('plugs', 'Plugs')}</h3>
       </div>
       {!sortedIntegrations.length ? (
-        <div className="bg-sixth border-fifth border rounded-[4px] p-[24px] flex flex-col gap-[16px] items-start">
+        <div className="bg-white border-[#eceef1] border rounded-[16px] p-[20px] flex flex-col gap-[16px] items-start">
           <div className="text-customColor18">
             {t(
               'there_are_not_plugs_matching_your_channels',

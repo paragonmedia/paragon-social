@@ -991,5 +991,6 @@
   "paragon_menu_create": "Create",
   "paragon_menu_library": "Library",
   "paragon_menu_agent": "AI agent",
-  "paragon_menu_settings": "Settings"
+  "paragon_menu_settings": "Settings",
+  "paragon_settings_subtitle": "Account, team and integrations of your space"
 }

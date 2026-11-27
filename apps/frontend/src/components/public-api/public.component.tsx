@@ -926,7 +926,7 @@ export const PublicComponent = () => {
 
   return (
     <div className="flex flex-col gap-[20px]">
-      <h3 className="text-[20px]">{t('agents', 'Agents')}</h3>
+      <h3 className="m-0 font-heading text-[18px] font-[600] text-[#111214]">{t('agents', 'Agents')}</h3>
       <PublicApiContent />
     </div>
   );

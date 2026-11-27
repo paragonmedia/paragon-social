@@ -70,14 +70,14 @@ export const Autopost: FC = () => {
   );
   return (
     <div className="flex flex-col">
-      <h3 className="text-[20px]">{t('autopost', 'Autopost')}</h3>
+      <h3 className="m-0 font-heading text-[18px] font-[600] text-[#111214]">{t('autopost', 'Autopost')}</h3>
       <div className="text-customColor18 mt-[4px]">
         {t(
           'autopost_creates_drafts_from_your_rss_new_items',
           'Autopost creates drafts from your RSS new items, review and schedule them from the calendar to publish them'
         )}
       </div>
-      <div className="my-[16px] mt-[16px] bg-sixth border-fifth items-center border rounded-[4px] p-[24px] flex gap-[24px]">
+      <div className="my-[16px] mt-[16px] bg-white border-[#eceef1] items-center border rounded-[16px] p-[20px] flex gap-[24px]">
         <div className="flex flex-col w-full">
           {!!data?.length && (
             <div className="grid grid-cols-[1fr,1fr,1fr,1fr,1fr] w-full gap-y-[10px]">

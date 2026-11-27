@@ -124,40 +124,45 @@ export const SettingsPopup: FC<{
     loadProfile();
   }, []);
 
+  // Paragon Social: settings screen of the design (title, plain section
+  // list with the active one in white, content in a white card)
   return (
-    <>
-      <div className="bg-newBgColorInner p-[20px] mobile:p-[12px] flex flex-col transition-all w-[260px] mobile:w-full">
-        <div className="flex flex-1 flex-col gap-[15px] mobile:flex-row mobile:gap-[8px] mobile:overflow-x-auto mobile:pb-[6px] scrollbar scrollbar-thumb-fifth scrollbar-track-newBgColor">
+    <div className="flex-1 min-w-0 flex flex-col gap-[24px] px-[32px] pt-[28px] pb-[48px] mobile:px-[16px] mobile:pt-[16px]">
+      <header className="flex flex-col gap-[4px]">
+        <h1 className="m-0 font-heading text-[30px] mobile:text-[24px] font-[700] -tracking-[0.6px] text-[#111214]">
+          {t('paragon_menu_settings', 'Settings')}
+        </h1>
+        <p className="m-0 text-[14px] text-[#5d616a]">
+          {t(
+            'paragon_settings_subtitle',
+            'Account, team and integrations of your space'
+          )}
+        </p>
+      </header>
+      <div className="flex items-start gap-[24px] mobile:flex-col">
+      <nav className="w-[200px] shrink-0 flex flex-col gap-[2px] sticky top-[24px] mobile:static mobile:w-full mobile:flex-row mobile:overflow-x-auto mobile:pb-[6px]">
           {list.map(({ tab: tabKey, label }) => (
-            <div
+            <button
+              type="button"
               key={tabKey}
               className={clsx(
-                'cursor-pointer flex items-center gap-[12px] group/profile hover:bg-boxHover rounded-e-[8px] mobile:shrink-0 mobile:whitespace-nowrap mobile:rounded-[8px] mobile:px-[12px] mobile:py-[8px]',
-                tabKey === tab && 'bg-boxHover'
+                'h-[42px] px-[14px] rounded-[12px] text-start text-[14px] transition-colors mobile:shrink-0 mobile:whitespace-nowrap',
+                tabKey === tab
+                  ? 'bg-white text-[#111214] font-[600] shadow-[0_1px_2px_rgba(17,18,20,.06)]'
+                  : 'text-[#5d616a] font-[500] hover:bg-white/70 hover:text-[#111214]'
               )}
               onClick={() => setTab(tabKey)}
             >
-              <div
-                className={clsx(
-                  'h-full w-[4px] rounded-s-[3px] opacity-0 group-hover/profile:opacity-100 transition-opacity mobile:hidden',
-                  tabKey === tab && 'opacity-100'
-                )}
-              >
-                <SVGLine />
-              </div>
               {label}
-            </div>
+            </button>
           ))}
-        </div>
-        <div>
           {showLogout && (
-            <div className="mt-4 mobile:mt-[8px]">
+            <div className="mt-[16px] px-[14px] text-[14px] mobile:mt-0">
               <LogoutComponent />
             </div>
           )}
-        </div>
-      </div>
-      <div className="bg-newBgColorInner flex-1 min-w-0 flex-col flex p-[20px] mobile:p-[12px] gap-[12px]">
+      </nav>
+      <section className="flex-1 min-w-0 flex flex-col bg-white border border-[#eceef1] rounded-[20px] p-[24px] mobile:p-[16px]">
         <FormProvider {...form}>
           <form onSubmit={form.handleSubmit(submit)}>
             {!!getRef && (
@@ -243,8 +248,9 @@ export const SettingsPopup: FC<{
             </div>
           </form>
         </FormProvider>
+      </section>
       </div>
-    </>
+    </div>
   );
 };
 export const SettingsComponent = () => {

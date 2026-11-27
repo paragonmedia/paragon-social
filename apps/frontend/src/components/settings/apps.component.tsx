@@ -15,7 +15,7 @@ export const AppsComponent: FC<{ canManageApps: boolean }> = ({
 
   return (
     <div className="flex flex-col gap-[20px]">
-      <h3 className="text-[20px]">{t('apps', 'Apps')}</h3>
+      <h3 className="m-0 font-heading text-[18px] font-[600] text-[#111214]">{t('apps', 'Apps')}</h3>
       {canManageApps && (
         <div className="flex gap-[6px]">
           {(['apps', 'approved_apps'] as const).map((tab) => (
