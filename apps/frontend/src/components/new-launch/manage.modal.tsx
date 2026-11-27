@@ -1108,8 +1108,8 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
                 className="h-[44px] px-[16px] rounded-[12px] border border-[#fbc3ca] bg-[#fff5f6] hover:bg-[#fde8ea] text-[#b42234] text-[14px] font-[600] flex items-center gap-[8px]"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                  <path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z" />
-                  <path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z" />
+                  <path d="M9.94 15.5A2 2 0 0 0 8.5 14.06l-6.14-1.58a.5.5 0 0 1 0-.96L8.5 9.94A2 2 0 0 0 9.94 8.5l1.58-6.14a.5.5 0 0 1 .96 0l1.58 6.14a2 2 0 0 0 1.44 1.44l6.14 1.58a.5.5 0 0 1 0 .96l-6.14 1.58a2 2 0 0 0-1.44 1.44l-1.58 6.14a.5.5 0 0 1-.96 0z" />
+                  <path d="M20 3v4M22 5h-4" />
                 </svg>
                 {t('paragon_improve_ai', 'Improve with AI')}
               </button>
