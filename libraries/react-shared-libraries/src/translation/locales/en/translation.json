@@ -1088,5 +1088,13 @@
   "paragon_invite_to_space": "This person will join the space",
   "paragon_invite_to_space_hint": "and will only see its channels and posts.",
   "paragon_role_user": "Member (client)",
-  "paragon_role_admin": "Administrator"
+  "paragon_role_admin": "Administrator",
+  "paragon_connect_search": "Search social network",
+  "paragon_connect_title": "Connect a channel",
+  "paragon_connect_link_title": "Link for your client",
+  "paragon_connect_link_hint": "Pick the network and we copy a link: your client opens it and connects the account without needing a login.",
+  "paragon_connect_hint": "You will sign in to the network and choose which accounts to authorize.",
+  "paragon_connect_space": "It connects to the space",
+  "paragon_connect_client_hint": "Is it a client account? Send them a link so they connect it themselves.",
+  "paragon_connect_client_link": "Copy link for client"
 }

@@ -1,7 +1,9 @@
 'use client';
 
 import { useModals } from '@gitroom/frontend/components/layout/new-modal';
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
+import { useUser } from '@gitroom/frontend/components/layout/user.context';
+import { useOrganizations } from '@gitroom/frontend/components/new-layout/paragon.sidebar';
 import { useFetch } from '@gitroom/helpers/utils/custom.fetch';
 import { Input } from '@gitroom/react/form/input';
 import { FieldValues, FormProvider, useForm } from 'react-hook-form';
@@ -28,8 +30,8 @@ export const useAddProvider = (update?: () => void, invite?: boolean) => {
   return useCallback(async () => {
     const data = await (await fetch('/integrations')).json();
     modal.openModal({
-      title: 'Add Channel',
-      withCloseButton: true,
+      title: '',
+      withCloseButton: false,
       children: (
         <AddProviderComponent invite={!!invite} update={update} {...data} />
       ),
@@ -47,7 +49,7 @@ export const AddProviderButton: FC<{
   return (
     <div className="flex group-[.sidebar]:block gap-[8px]">
       <button
-        className="flex-1 group-[.sidebar]:w-[100%] group-[.sidebar]:flex-none text-btnText bg-btnSimple h-[44px] pt-[12px] pb-[14px] ps-[16px] pe-[20px] justify-center items-center flex rounded-[8px] gap-[8px]"
+        className="flex-1 group-[.sidebar]:w-[100%] group-[.sidebar]:flex-none text-white bg-[#111214] hover:bg-[#2a2c31] h-[44px] ps-[16px] pe-[20px] justify-center items-center flex rounded-[12px] gap-[8px] text-[14px] font-[600]"
         onClick={add}
       >
         <div>
@@ -78,7 +80,7 @@ export const AddProviderButton: FC<{
           'invite_link',
           'Send Invite Link to a customer to add channel'
         )}
-        className="group-[.sidebar]:hidden min-h-[44px] min-w-[44px] bg-btnSimple justify-center items-center flex rounded-[8px] cursor-pointer"
+        className="group-[.sidebar]:hidden min-h-[44px] min-w-[44px] bg-white border border-[#dfe1e5] hover:bg-[#f6f7f8] text-[#111214] justify-center items-center flex rounded-[12px] cursor-pointer"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -701,20 +703,39 @@ export const AddProviderComponent: FC<{
     [onboarding]
   );
 
+  const [query, setQuery] = useState('');
   const t = useT();
 
   return (
-    <div className="w-full flex flex-col gap-[20px] rounded-[4px] relative]">
-      <div className="flex flex-col">
+    <div className="w-[880px] max-w-full flex flex-col gap-[20px] relative">
+      <ConnectHeader invite={!!props.invite} />
+      <label className="flex items-center gap-[10px] h-[46px] px-[14px] border border-[#dfe1e5] rounded-[12px] text-[#6b6f78] focus-within:border-[#111214] transition-colors">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+          <circle cx="11" cy="11" r="7" />
+          <path d="m20 20-3.5-3.5" />
+        </svg>
+        <input
+          type="search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder={t('paragon_connect_search', 'Search social network')}
+          className="flex-1 border-0 outline-none bg-transparent text-[15px] text-[#111214]"
+        />
+      </label>
+      <div className="flex flex-col max-h-[52vh] overflow-y-auto -mx-[4px] px-[4px] pb-[4px]">
         <div
           className={clsx(
             isMobile && 'gap-[20px] flex flex-col',
             !isMobile &&
-              'grid grid-cols-5 gap-[10px] justify-items-center justify-center mobile:!grid-cols-3',
-            isMobile ? {} : onboarding ? 'grid-cols-9' : 'grid-cols-5'
+              'grid gap-[12px] mobile:!grid-cols-3',
+            isMobile ? {} : onboarding ? 'grid-cols-9' : 'grid-cols-4'
           )}
         >
           {social
+            .filter((item) =>
+              !query.trim() ||
+              item.name.toLowerCase().includes(query.trim().toLowerCase())
+            )
             .filter((item) => {
               if (!props.invite) {
                 return true;
@@ -747,16 +768,16 @@ export const AddProviderComponent: FC<{
                 className={clsx(
                   isMobile
                     ? 'flex-row h-[72px] p-[16px]'
-                    : 'flex-col p-[10px] h-[100px] justify-center mobile:text-[13px] mobile:leading-[1.2]',
-                  'w-full text-[14px] rounded-[8px] bg-newTableHeader text-textColor relative items-center flex gap-[10px] cursor-pointer'
+                    : 'flex-col p-[10px] h-[112px] justify-center mobile:text-[13px] mobile:leading-[1.2]',
+                  'paragon-spot w-full text-[13px] font-[500] rounded-[16px] bg-white border border-[#eceef1] hover:border-[#dfe1e5] text-[#111214] relative items-center flex gap-[10px] cursor-pointer'
                 )}
               >
                 <div>
                   <PlatformIcon
                     identifier={item.identifier}
-                    size={32}
+                    size={36}
                     iconClassName={clsx(
-                      'w-[32px] h-[32px]',
+                      'w-[36px] h-[36px]',
                       item.identifier !== 'google_my_business' && 'rounded-full'
                     )}
                   />
@@ -788,6 +809,81 @@ export const AddProviderComponent: FC<{
             ))}
         </div>
       </div>
+      {!props.invite && !onboarding && <ClientLinkFooter update={props.update} />}
     </div>
+  );
+};
+
+// Paragon Social: header and footer of the "Conectar un canal" window
+const ConnectHeader: FC<{ invite: boolean }> = ({ invite }) => {
+  const t = useT();
+  const modal = useModals();
+  const user = useUser();
+  const { data: spaces } = useOrganizations();
+  const space = spaces?.find((p) => p.id === user?.orgId)?.name;
+  return (
+    <header className="flex items-start justify-between gap-[16px]">
+      <div className="flex flex-col gap-[6px]">
+        <h1 className="m-0 font-heading text-[26px] font-[700] -tracking-[0.5px] text-[#111214]">
+          {invite
+            ? t('paragon_connect_link_title', 'Link for your client')
+            : t('paragon_connect_title', 'Connect a channel')}
+        </h1>
+        <p className="m-0 text-[14px] text-[#5d616a] leading-[1.5]">
+          {invite
+            ? t(
+                'paragon_connect_link_hint',
+                'Pick the network and we copy a link: your client opens it and connects the account without needing a login.'
+              )
+            : t(
+                'paragon_connect_hint',
+                'You will sign in to the network and choose which accounts to authorize.'
+              )}
+          {!!space && (
+            <>
+              {' '}
+              {t('paragon_connect_space', 'It connects to the space')}{' '}
+              <b className="text-[#111214]">{space}</b>.
+            </>
+          )}
+        </p>
+      </div>
+      <button
+        type="button"
+        onClick={() => modal.closeCurrent()}
+        aria-label={t('close', 'Close')}
+        className="shrink-0 w-[44px] h-[44px] rounded-[12px] border border-[#dfe1e5] hover:bg-[#f6f7f8] flex items-center justify-center text-[#111214]"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+          <path d="M6 6l12 12M18 6 6 18" />
+        </svg>
+      </button>
+    </header>
+  );
+};
+
+const ClientLinkFooter: FC<{ update?: () => void }> = ({ update }) => {
+  const t = useT();
+  const modal = useModals();
+  const invite = useAddProvider(update, true);
+  return (
+    <footer className="flex flex-wrap items-center justify-between gap-[12px] pt-[16px] border-t border-[#f1f2f4] text-[13px] text-[#5d616a]">
+      <span>
+        {t(
+          'paragon_connect_client_hint',
+          'Is it a client account? Send them a link so they connect it themselves.'
+        )}
+      </span>
+      <button
+        type="button"
+        onClick={() => {
+          modal.closeCurrent();
+          invite();
+        }}
+        className="h-[44px] px-[16px] rounded-[12px] border border-[#111214] bg-white hover:bg-[#f6f7f8] text-[#111214] text-[14px] font-[600]"
+      >
+        {t('paragon_connect_client_link', 'Copy link for client')}
+      </button>
+    </footer>
   );
 };

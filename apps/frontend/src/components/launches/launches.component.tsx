@@ -3,9 +3,10 @@
 import {
   AddProviderButton,
   CustomVariables,
+  useAddProvider,
   useExtensionConnect,
 } from '@gitroom/frontend/components/launches/add.provider.component';
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { capitalize, groupBy, orderBy } from 'lodash';
 import { CalendarWeekProvider } from '@gitroom/frontend/components/launches/calendar.context';
 import {
@@ -494,6 +495,16 @@ export const LaunchesComponent = () => {
       setChannelsOpen(true);
     }
   }, [search]);
+  // "+ Conectar canal" in the sidebar opens the connect window directly
+  const connectChannel = useAddProvider(() => update(true));
+  const connectOpened = useRef(false);
+  useEffect(() => {
+    if (search.get('connect') === '1' && !connectOpened.current) {
+      connectOpened.current = true;
+      router.replace('/launches');
+      connectChannel();
+    }
+  }, [search]);
   const [mode] = useCookie('mode', 'light');
   const { isLoading, data: integrations, mutate } = useIntegrationList();
 
@@ -674,22 +685,22 @@ export const LaunchesComponent = () => {
           className={clsx(
             'flex relative flex-col',
             channelsOpen
-              ? 'fixed top-0 bottom-0 start-[248px] z-[150] w-[300px] shadow-[0_20px_60px_rgba(17,18,20,.25)] mobile:start-0 mobile:top-auto mobile:inset-x-0 mobile:bottom-0 mobile:w-full mobile:max-h-[80vh] mobile:rounded-t-[16px] mobile:overflow-hidden'
+              ? 'fixed top-0 bottom-0 start-0 z-[150] w-[320px] shadow-[0_20px_60px_rgba(17,18,20,.25)] mobile:start-0 mobile:top-auto mobile:inset-x-0 mobile:bottom-0 mobile:w-full mobile:max-h-[80vh] mobile:rounded-t-[16px] mobile:overflow-hidden'
               : 'hidden'
           )}
         >
           <div
             className={clsx(
-              'bg-newBgColorInner p-[20px] flex flex-col gap-[15px] transition-all absolute start-0 top-0 w-full h-full mobile:static mobile:h-auto mobile:max-h-[80vh] mobile:pb-[80px] overflow-x-hidden overflow-y-auto scrollbar scrollbar-thumb-fifth scrollbar-track-newBgColor'
+              'bg-white p-[24px] flex flex-col gap-[16px] transition-all absolute start-0 top-0 w-full h-full mobile:static mobile:h-auto mobile:max-h-[80vh] mobile:pb-[80px] overflow-x-hidden overflow-y-auto scrollbar scrollbar-thumb-fifth scrollbar-track-newBgColor'
             )}
           >
             <div className="flex items-center">
-              <h2 className="group-[.sidebar]:hidden flex-1 text-[20px] font-[500]">
+              <h2 className="group-[.sidebar]:hidden flex-1 m-0 font-heading text-[20px] font-[700] text-[#111214]">
                 {t('channels')}
               </h2>
               <div
                 onClick={() => setChannelsOpen(false)}
-                className="hidden mobile:flex text-btnText bg-btnSimple rounded-[6px] w-[28px] h-[28px] items-center justify-center cursor-pointer select-none"
+                className="flex text-[#111214] border border-[#dfe1e5] hover:bg-[#f6f7f8] rounded-[10px] w-[36px] h-[36px] items-center justify-center cursor-pointer select-none"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -710,7 +721,7 @@ export const LaunchesComponent = () => {
                 onClick={() =>
                   setCollapseMenu(collapseMenu === '1' ? '0' : '1')
                 }
-                className="group-[.sidebar]:rotate-[180deg] group-[.sidebar]:mx-auto mobile:hidden text-btnText bg-btnSimple rounded-[6px] w-[24px] h-[24px] flex items-center justify-center cursor-pointer select-none"
+                className="hidden"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

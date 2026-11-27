@@ -148,7 +148,7 @@ export const PlatformAnalytics = () => {
         </p>
         <button
           type="button"
-          onClick={() => router.push('/launches?channels=open')}
+          onClick={() => router.push('/launches?connect=1')}
           className="h-[44px] px-[20px] rounded-[12px] bg-[#f93b4f] hover:bg-[#e2283c] text-white text-[14px] font-[600]"
         >
           {t('paragon_connect_channel', 'Connect channel')}

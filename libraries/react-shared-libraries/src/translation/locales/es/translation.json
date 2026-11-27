@@ -1088,5 +1088,13 @@
   "paragon_invite_to_space": "Esta persona entrará al espacio",
   "paragon_invite_to_space_hint": "y solo verá sus canales y publicaciones.",
   "paragon_role_user": "Miembro (cliente)",
-  "paragon_role_admin": "Administrador"
+  "paragon_role_admin": "Administrador",
+  "paragon_connect_search": "Buscar red social",
+  "paragon_connect_title": "Conectar un canal",
+  "paragon_connect_link_title": "Link para tu cliente",
+  "paragon_connect_link_hint": "Elige la red y copiamos un link: tu cliente lo abre y conecta su cuenta sin necesitar usuario.",
+  "paragon_connect_hint": "Vas a iniciar sesión en la red y elegir qué cuentas autorizar.",
+  "paragon_connect_space": "Se conecta al espacio",
+  "paragon_connect_client_hint": "¿Es la cuenta de un cliente? Mándale un link para que la conecte él mismo.",
+  "paragon_connect_client_link": "Copiar link para cliente"
 }

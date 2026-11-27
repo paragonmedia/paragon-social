@@ -205,8 +205,8 @@ export const Component: FC<{
             <div
               className={clsx(
                 !modal.removeLayout &&
-                  'gap-[40px] p-[32px] mobile:gap-[24px] mobile:p-[16px]',
-                'bg-newBgColorInner mx-auto flex flex-col w-fit rounded-[24px] mobile:rounded-[16px] relative mobile:!max-w-full',
+                  'gap-[24px] p-[28px] mobile:gap-[20px] mobile:p-[16px]',
+                'bg-white mx-auto flex flex-col w-fit rounded-[24px] mobile:rounded-[16px] relative mobile:!max-w-full shadow-[0_30px_80px_rgba(17,18,20,.35)]',
                 modal.destructive && 'border-2 border-red-700',
                 modal.size ? '' : 'min-w-[600px] mobile:min-w-0 mobile:w-full',
                 modal.fullScreen && 'h-full'
@@ -220,15 +220,16 @@ export const Component: FC<{
               })}
               onClick={(e) => e.stopPropagation()}
             >
+              {(!!modal.title || modal.withCloseButton !== false) && (
               <div className="flex items-center">
-                <div className="text-[24px] mobile:text-[20px] mobile:pe-[28px] font-[600] flex-1">
+                <div className="font-heading text-[22px] mobile:text-[20px] mobile:pe-[28px] font-[700] -tracking-[0.4px] text-[#111214] flex-1">
                   {modal.title}
                 </div>
                 {typeof modal.withCloseButton === 'undefined' ||
                 modal.withCloseButton ? (
                   <div className="cursor-pointer">
                     <button
-                      className="outline-none absolute end-[20px] top-[20px] mobile:end-[12px] mobile:top-[12px] mantine-UnstyledButton-root mantine-ActionIcon-root hover:bg-tableBorder cursor-pointer mantine-Modal-close mantine-1dcetaa"
+                      className="outline-none absolute end-[20px] top-[20px] mobile:end-[12px] mobile:top-[12px] w-[36px] h-[36px] rounded-[10px] border border-[#dfe1e5] hover:bg-[#f6f7f8] text-[#111214] flex items-center justify-center cursor-pointer"
                       type="button"
                       onClick={closeModalFunction}
                     >
@@ -250,6 +251,7 @@ export const Component: FC<{
                   </div>
                 ) : null}
               </div>
+              )}
               <div
                 className={clsx(
                   'whitespace-pre-line',

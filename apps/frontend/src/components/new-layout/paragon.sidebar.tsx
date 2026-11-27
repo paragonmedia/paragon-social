@@ -275,7 +275,7 @@ export const ParagonSidebarChannels: FC = () => {
         </div>
       ))}
       <Link
-        href="/launches?channels=open"
+        href="/launches?connect=1"
         className="mt-[4px] h-[44px] rounded-[10px] border border-dashed border-[#3a3d44] text-[#c6c9cf] hover:text-white hover:border-[#5a5e66] flex items-center justify-center text-[13px]"
       >
         + {t('paragon_connect_channel', 'Connect channel')}
