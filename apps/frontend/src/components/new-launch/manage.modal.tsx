@@ -1504,7 +1504,7 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
         </BottomSheet>
       )}
       <CopilotPopup
-        className="mobile:!z-[460] mobile:!bottom-[112px]"
+        className="!bottom-[100px] !end-[44px] mobile:!z-[460] mobile:!bottom-[112px] mobile:!end-[16px] [&_.copilotKitButton]:!w-[48px] [&_.copilotKitButton]:!h-[48px] [&_.copilotKitButton]:!bg-[#111214]"
         hitEscapeToClose={false}
         clickOutsideToClose={true}
         instructions={`
