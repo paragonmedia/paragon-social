@@ -270,6 +270,9 @@ module.exports = {
         xs: {
           max: '401px',
         },
+        phone: {
+          raw: '(max-width: 640px)',
+        },
       },
     },
   },

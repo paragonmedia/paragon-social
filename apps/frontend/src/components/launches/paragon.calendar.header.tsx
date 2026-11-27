@@ -233,16 +233,16 @@ export const ParagonCalendarStats: FC = () => {
   return (
     <section
       aria-label={t('paragon_summary', 'Summary')}
-      className="grid grid-cols-4 max-[640px]:grid-cols-2 gap-[16px] max-[640px]:gap-[10px]"
+      className="grid grid-cols-4 phone:grid-cols-2 gap-[16px] phone:gap-[10px]"
     >
       {stats.map((stat) => (
         <div
           key={stat.label}
           onPointerMove={spot}
-          className="paragon-spot bg-white border border-[#eceef1] rounded-[16px] px-[20px] py-[18px] max-[640px]:px-[14px] max-[640px]:py-[12px] flex flex-col gap-[6px] max-[640px]:gap-[2px]"
+          className="paragon-spot bg-white border border-[#eceef1] rounded-[16px] px-[20px] py-[18px] phone:px-[14px] phone:py-[12px] flex flex-col gap-[6px] phone:gap-[2px]"
         >
           <span className="text-[13px] text-[#5d616a]">{stat.label}</span>
-          <span className="font-heading font-[600] text-[28px] max-[640px]:text-[22px] -tracking-[0.56px] text-[#111214]">
+          <span className="font-heading font-[600] text-[28px] phone:text-[22px] -tracking-[0.56px] text-[#111214]">
             {stat.value}
           </span>
         </div>
