@@ -167,7 +167,7 @@ export const getMcpConfig = (
       case 'NanoClaw':
         return {
           config: `ncl groups config add-mcp-server --id <group-id> --name postiz --url ${oauthUrl}`,
-          hint: 'Run this in your terminal, replace <group-id> with the agent group that should get Postiz.',
+          hint: 'Run this in your terminal, replace <group-id> with the agent group that should get Paragon Social.',
         };
     }
   }
@@ -266,7 +266,7 @@ export const getMcpConfig = (
       // No headers flag, the key travels inside the URL like remote clients
       return {
         config: `ncl groups config add-mcp-server --id <group-id> --name postiz --url ${mcpBase}/mcp/${apiKey}`,
-        hint: 'Run this in your terminal, replace <group-id> with the agent group that should get Postiz.',
+        hint: 'Run this in your terminal, replace <group-id> with the agent group that should get Paragon Social.',
       };
   }
 };
@@ -354,7 +354,7 @@ const McpSection = ({
           <div className="text-[13px] text-customColor18 mt-[2px]">
             {t(
               'connect_your_mcp_client_to_postiz_to_schedule_your_posts_faster',
-              'Connect Postiz MCP server to your client (Http streaming) to schedule your posts faster.'
+              'Connect Paragon Social MCP server to your client (Http streaming) to schedule your posts faster.'
             )}
           </div>
         </div>
@@ -411,7 +411,7 @@ const McpSection = ({
                   {m === 'official'
                     ? t('official_connector', 'Official connector')
                     : m === 'oauth'
-                    ? t('sign_in_no_api_key', 'Sign in with Postiz (no API key)')
+                    ? t('sign_in_no_api_key', 'Sign in with Paragon Social (no API key)')
                     : t('api_key', 'API Key')}
                 </button>
               ))}
@@ -424,12 +424,12 @@ const McpSection = ({
               {isSelfHosted
                 ? t(
                     'connector_self_hosted_description',
-                    'The official connector works with self-hosted Postiz too. When asked to sign in, choose "Use self-hosted" and enter {{url}} with your API key.',
+                    'The official connector works with self-hosted Paragon Social too. When asked to sign in, choose "Use self-hosted" and enter {{url}} with your API key.',
                     { url: mcpBase, interpolation: { escapeValue: false } }
                   )
                 : t(
                     'connector_onboarding_description',
-                    'The fastest way: add Postiz with one click, you will be asked to sign in'
+                    'The fastest way: add Paragon Social with one click, you will be asked to sign in'
                   )}
             </div>
             <div className="flex flex-wrap gap-[8px]">
@@ -490,7 +490,7 @@ const McpSection = ({
               !chatOnly &&
               ` ${t(
                 'oauth_sign_in_hint',
-                'Your agent will open a browser window to sign in to Postiz.'
+                'Your agent will open a browser window to sign in to Paragon Social.'
               )}`}
           </div>
           <pre className="bg-newBgColorInner border border-newBorder rounded-[8px] p-[16px] text-[13px] whitespace-pre-wrap break-all overflow-x-auto leading-[1.6]">
@@ -582,7 +582,7 @@ export const localCliSteps = [
     code: 'postiz auth:login',
   },
   {
-    label: 'Install the Postiz skill for your AI agent',
+    label: 'Install the Paragon Social skill for your AI agent',
     code: 'npx skills add gitroomhq/postiz-agent',
   },
 ] as const;
@@ -597,7 +597,7 @@ const ciCliSteps = [
     code: 'export POSTIZ_API_KEY="{API_KEY}"',
   },
   {
-    label: 'Install the Postiz skill for your AI agent',
+    label: 'Install the Paragon Social skill for your AI agent',
     code: 'npx skills add gitroomhq/postiz-agent',
   },
 ] as const;
@@ -636,7 +636,7 @@ const CliSection = ({ apiKey }: { apiKey: string }) => {
           <div className="text-[13px] text-customColor18 mt-[2px]">
             {t(
               'cli_description',
-              'Use the Postiz CLI to automate posting from your terminal, or install the skill to let your AI agent schedule posts for you.'
+              'Use the Paragon Social CLI to automate posting from your terminal, or install the skill to let your AI agent schedule posts for you.'
             )}
           </div>
         </div>
@@ -770,7 +770,7 @@ const PublicApiContent = () => {
         <br />
         {t(
           'api_auth_note_line2',
-          'If you are building a product that schedules posts on behalf of other Postiz users,'
+          'If you are building a product that schedules posts on behalf of other Paragon Social users,'
         )}
         <br />
         {t(
@@ -792,7 +792,7 @@ const PublicApiContent = () => {
             <div className="text-[13px] text-customColor18 mt-[2px]">
               {t(
                 'use_postiz_api_to_integrate_with_your_tools',
-                'Use Postiz API to integrate with your tools.'
+                'Use Paragon Social API to integrate with your tools.'
               )}
             </div>
           </div>

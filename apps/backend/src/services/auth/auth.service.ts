@@ -52,7 +52,12 @@ export class AuthService {
           throw new Error('Email already exists');
         }
 
-        if (!(await this.canRegister(provider))) {
+        const invite =
+          addToOrg && typeof addToOrg !== 'boolean' ? addToOrg : false;
+
+        // Paragon Social: a valid team invitation is allowed to sign up even
+        // when public registration is disabled
+        if (!invite && !(await this.canRegister(provider))) {
           throw new Error('Registration is disabled');
         }
 
@@ -66,21 +71,27 @@ export class AuthService {
           .lead(create.users[0].user, body.attribution)
           .catch((err) => {});
 
-        const addedOrg =
-          addToOrg && typeof addToOrg !== 'boolean'
-            ? await this._organizationService.addUserToOrg(
-                create.users[0].user.id,
-                addToOrg.id,
-                addToOrg.orgId,
-                addToOrg.role
-              )
-            : false;
+        const addedOrg = invite
+          ? await this._organizationService.addUserToOrg(
+              create.users[0].user.id,
+              invite.id,
+              invite.orgId,
+              invite.role
+            )
+          : false;
+
+        if (addedOrg) {
+          await this._organizationService.discardSignupOrganization(
+            create.id,
+            create.users[0].user.id
+          );
+        }
 
         const obj = { addedOrg, jwt: await this.jwt(create.users[0].user) };
         await this._emailService.sendEmailSync(
           body.email,
-          'Activate your account',
-          `Click <a href="${process.env.FRONTEND_URL}/auth/activate/${obj.jwt}">here</a> to activate your account`
+          'Activa tu cuenta',
+          `Ya casi está. Confirma tu correo para empezar a usar Paragon Social.<br /><br /><a href="${process.env.FRONTEND_URL}/auth/activate/${obj.jwt}" style="display:inline-block;background:#FA3D4F;color:#ffffff;text-decoration:none;font-weight:600;font-size:15px;line-height:1;padding:14px 24px;border-radius:10px">Activar mi cuenta</a>`
         );
         return obj;
       }
@@ -257,8 +268,8 @@ export class AuthService {
 
     await this._emailService.sendEmailSync(
       user.email,
-      'Reset your password',
-      `You have requested to reset your password. <br />Click <a href="${process.env.FRONTEND_URL}/auth/forgot/${resetValues}">here</a> to reset your password<br />The link will expire in 20 minutes`
+      'Restablece tu contraseña',
+      `Recibimos una solicitud para restablecer tu contraseña.<br /><br /><a href="${process.env.FRONTEND_URL}/auth/forgot/${resetValues}" style="display:inline-block;background:#FA3D4F;color:#ffffff;text-decoration:none;font-weight:600;font-size:15px;line-height:1;padding:14px 24px;border-radius:10px">Crear contraseña nueva</a><br /><br /><span style="font-size:13px;color:#8a847c">El enlace vence en 20 minutos. Si no lo pediste, ignora este correo.</span>`
     );
   }
 
@@ -310,8 +321,8 @@ export class AuthService {
 
     await this._emailService.sendEmailSync(
       user.email,
-      'Activate your account',
-      `Click <a href="${process.env.FRONTEND_URL}/auth/activate/${jwt}">here</a> to activate your account`
+      'Activa tu cuenta',
+      `Ya casi está. Confirma tu correo para empezar a usar Paragon Social.<br /><br /><a href="${process.env.FRONTEND_URL}/auth/activate/${jwt}" style="display:inline-block;background:#FA3D4F;color:#ffffff;text-decoration:none;font-weight:600;font-size:15px;line-height:1;padding:14px 24px;border-radius:10px">Activar mi cuenta</a>`
     );
 
     return true;

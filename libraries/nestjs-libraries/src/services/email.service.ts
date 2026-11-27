@@ -82,59 +82,31 @@ export class EmailService {
       ? { 'List-Unsubscribe': `<${settingsUrl}>` }
       : undefined;
 
-    const modifiedHtml = `
-    <div style="
-        background: linear-gradient(to bottom right, #e6f2ff, #f0e6ff);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 2rem;
-    ">
-        <div style="
-            background-color: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(4px);
-            border-radius: 0.5rem;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            max-width: 48rem;
-            width: 100%;
-            padding: 2rem;
-        ">
-            <h1 style="
-                font-size: 1.875rem;
-                font-weight: bold;
-                margin-bottom: 1.5rem;
-                text-align: left;
-                color: #1f2937;
-            ">${subject}</h1>
-            
-            <div style="
-                margin-bottom: 2rem;
-                color: #374151;
-            ">
-                ${html}
-            </div>
-            
-            <div style="
-                display: flex;
-                align-items: center;
-                border-top: 1px solid #e5e7eb;
-                padding-top: 1.5rem;
-            ">
-                <div>
-                    <h2 style="
-                        font-size: 1.25rem;
-                        font-weight: 600;
-                        color: #1f2937;
-                        margin: 0;
-                    ">${process.env.EMAIL_FROM_NAME}</h2>
-                    <div style="font-size: 12px">
-                      You can change your notification preferences in your <a href="${settingsUrl}">account settings.</a>
-                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    `;
+    // Paragon Social: plantilla con la marca de Paragon
+    const modifiedHtml = `<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"></head>
+<body style="margin:0;padding:0;background:#f4f2ef">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f4f2ef;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif">
+<tr><td align="center" style="padding:36px 14px">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:560px">
+<tr><td style="padding:0 6px 18px"><img src="https://weareparagonmedia.com/brand/social/email-lockup.png" width="178" height="28" alt="Paragon Social" style="display:block;border:0;width:178px;height:28px"></td></tr>
+<tr><td style="background:#ffffff;border:1px solid #ebe7e2;border-radius:16px">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr><td style="height:4px;line-height:4px;font-size:0;background:#FA3D4F;border-radius:16px 16px 0 0">&nbsp;</td></tr>
+<tr><td style="padding:34px 34px 32px">
+<h1 style="margin:0 0 14px;font-size:22px;line-height:1.3;font-weight:700;color:#141414;letter-spacing:-0.015em">${subject}</h1>
+<div style="font-size:15px;line-height:1.65;color:#3d3a36">${html}</div>
+</td></tr>
+</table>
+</td></tr>
+<tr><td style="padding:22px 10px 0;text-align:center;font-size:12px;line-height:1.6;color:#8a847c">
+${process.env.EMAIL_FROM_NAME} · Paragon Media<br>
+Puedes elegir qué correos recibes en tus <a href="${settingsUrl}" style="color:#8a847c;text-decoration:underline">ajustes de notificaciones</a>.
+</td></tr>
+</table>
+</td></tr>
+</table>
+</body></html>`;
 
     let lastErr: unknown;
     for (let attempt = 0; attempt < 3; attempt++) {

@@ -47,6 +47,13 @@ export class OrganizationService {
     return this._organizationRepository.addUserToOrg(userId, id, orgId, role);
   }
 
+  // Paragon Social: someone who signs up from a team invitation only belongs
+  // to the inviting team, so the workspace created with the account is removed
+  async discardSignupOrganization(orgId: string, userId: string) {
+    await this._organizationRepository.deleteTeamMember(orgId, userId);
+    await this._organizationRepository.deleteOrganization(orgId);
+  }
+
   getOrgById(id: string) {
     return this._organizationRepository.getOrgById(id);
   }
@@ -119,8 +126,8 @@ export class OrganizationService {
         : user.email;
       await this._notificationsService.sendEmail(
         body.email,
-        `${user.name || user.email} invited you to join "${org.name}"`,
-        `${inviter} has invited you to join the "${org.name}" team.<br /><a href="${url}">Accept the invitation</a> to get started.<br />The link will expire in 2 days.`
+        `${user.name || user.email} te invitó a unirte a "${org.name}"`,
+        `${inviter} te invitó a unirte al equipo <strong>${org.name}</strong> en Paragon Social.<br /><br /><a href="${url}" style="display:inline-block;background:#FA3D4F;color:#ffffff;text-decoration:none;font-weight:600;font-size:15px;line-height:1;padding:14px 24px;border-radius:10px">Aceptar invitación</a><br /><br /><span style="font-size:13px;color:#8a847c">El enlace vence en 2 días.</span>`
       );
     }
     return { url };
@@ -143,7 +150,7 @@ export class OrganizationService {
       body.email
     );
     if (!users.length) {
-      throw new HttpException('No Postiz account found for this email', 400);
+      throw new HttpException('No Paragon Social account found for this email', 400);
     }
 
     if (users.length > 1) {
