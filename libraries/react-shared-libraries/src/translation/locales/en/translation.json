@@ -1011,5 +1011,6 @@
   "paragon_agent_subtitle": "Ask it for ideas, copy or to schedule posts for you.",
   "paragon_agent_new": "New conversation",
   "paragon_agent_threads": "Conversations",
-  "paragon_agent_placeholder": "Write an idea or ask for a week of content…"
+  "paragon_agent_placeholder": "Write an idea or ask for a week of content…",
+  "search_media_by_name": "Search files"
 }

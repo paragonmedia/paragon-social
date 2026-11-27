@@ -579,8 +579,8 @@ export const MediaBox: FC<{
         <div
           className={clsx(
             'w-full pointer-events-none relative mt-[5px] mb-[5px]',
-            // phones only keep the upload progress while there is something to show
-            !loading && !uploadInfo && 'mobile:hidden'
+            // phones (and the library page) only keep the upload progress while there is something to show
+            !loading && !uploadInfo && (standalone ? 'hidden' : 'mobile:hidden')
           )}
         >
           <div className="w-full h-[46px] overflow-hidden absolute left-0 bg-newBgColorInner uppyChange">

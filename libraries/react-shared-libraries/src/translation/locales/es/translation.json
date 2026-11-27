@@ -1011,5 +1011,6 @@
   "paragon_agent_subtitle": "Pídele ideas, textos o que programe publicaciones por ti.",
   "paragon_agent_new": "Nueva conversación",
   "paragon_agent_threads": "Conversaciones",
-  "paragon_agent_placeholder": "Escribe una idea o pide una semana de contenido…"
+  "paragon_agent_placeholder": "Escribe una idea o pide una semana de contenido…",
+  "search_media_by_name": "Buscar archivos"
 }
