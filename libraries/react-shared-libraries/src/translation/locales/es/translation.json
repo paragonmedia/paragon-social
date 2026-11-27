@@ -1112,5 +1112,7 @@
   "paragon_status_pending": "Pendiente de aprobar",
   "paragon_review_for": "Vista para",
   "paragon_review_title": "Revisa esta publicación",
-  "paragon_review_scheduled": "Programada para"
+  "paragon_review_scheduled": "Programada para",
+  "paragon_show_password": "Mostrar contraseña",
+  "paragon_hide_password": "Ocultar contraseña"
 }

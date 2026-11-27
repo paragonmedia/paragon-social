@@ -1112,5 +1112,7 @@
   "paragon_status_pending": "Pending approval",
   "paragon_review_for": "View for",
   "paragon_review_title": "Review this post",
-  "paragon_review_scheduled": "Scheduled for"
+  "paragon_review_scheduled": "Scheduled for",
+  "paragon_show_password": "Show password",
+  "paragon_hide_password": "Hide password"
 }
