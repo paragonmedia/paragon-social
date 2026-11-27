@@ -26,6 +26,7 @@ import { UsersService } from '@gitroom/nestjs-libraries/database/prisma/users/us
 import { UserDetailDto } from '@gitroom/nestjs-libraries/dtos/users/user.details.dto';
 import { EmailNotificationsDto } from '@gitroom/nestjs-libraries/dtos/users/email-notifications.dto';
 import { TimezoneDto } from '@gitroom/nestjs-libraries/dtos/users/timezone.dto';
+import { CreateOrganizationDto } from '@gitroom/nestjs-libraries/dtos/organizations/create.organization.dto';
 import { HttpForbiddenException } from '@gitroom/nestjs-libraries/services/exception.filter';
 import { RealIP } from 'nestjs-real-ip';
 import { UserAgent } from '@gitroom/nestjs-libraries/user/user.agent';
@@ -298,6 +299,30 @@ export class UsersController {
         users: p.users,
         subscription: p.subscription,
       }));
+  }
+
+  // Paragon Social: spaces for clients. Only an admin of the current space
+  // can create one, and it gets them as its owner.
+  @Post('/organizations')
+  @CheckPolicies([AuthorizationActions.Create, Sections.ADMIN])
+  createOrganization(
+    @GetUserFromRequest() user: User,
+    @GetOrgFromRequest() organization: Organization,
+    @Body() body: CreateOrganizationDto
+  ) {
+    // the policy above lets everything through when billing is off, so the
+    // role of the current space is checked here as well
+    // @ts-ignore
+    const role = organization?.users?.[0]?.role;
+    if (!['ADMIN', 'SUPERADMIN'].includes(role)) {
+      throw new HttpForbiddenException();
+    }
+    return this._orgService.createOrganizationForUser(user.id, body.name);
+  }
+
+  @Get('/organizations/overview')
+  spacesOverview(@GetUserFromRequest() user: User) {
+    return this._orgService.spacesOverview(user.id);
   }
 
   @Post('/change-org')

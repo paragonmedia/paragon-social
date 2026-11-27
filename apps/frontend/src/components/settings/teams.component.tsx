@@ -16,6 +16,7 @@ import { AddTeamMemberDto } from '@gitroom/nestjs-libraries/dtos/settings/add.te
 import { useToaster } from '@gitroom/react/toaster/toaster';
 import { deleteDialog } from '@gitroom/react/helpers/delete.dialog';
 import copy from 'copy-to-clipboard';
+import { useOrganizations } from '@gitroom/frontend/components/new-layout/paragon.sidebar';
 import { useT } from '@gitroom/react/translation/get.transation.service.client';
 
 const roles = [
@@ -77,11 +78,24 @@ export const AddMember = () => {
   );
 
   const t = useT();
+  const user = useUser();
+  const { data: spaces } = useOrganizations();
+  const spaceName = spaces?.find((p) => p.id === user?.orgId)?.name;
 
   return (
     <FormProvider {...form}>
       <form onSubmit={form.handleSubmit(submit)}>
         <div className="relative flex gap-[10px] flex-col flex-1 p-[16px] pt-0">
+          {!!spaceName && (
+            <div className="rounded-[12px] bg-[#f6f7f8] px-[14px] py-[12px] text-[13px] text-[#5d616a] leading-[1.5] mb-[6px]">
+              {t('paragon_invite_to_space', 'This person will join the space')}{' '}
+              <strong className="text-[#111214]">{spaceName}</strong>{' '}
+              {t(
+                'paragon_invite_to_space_hint',
+                'and will only see its channels and posts.'
+              )}
+            </div>
+          )}
           {sendEmail && (
             <Input
               label="Email"
@@ -93,7 +107,9 @@ export const AddMember = () => {
             <option value="">{t('select_role', 'Select Role')}</option>
             {roles.map((role) => (
               <option key={role.value} value={role.value}>
-                {role.name}
+                {role.value === 'USER'
+                  ? t('paragon_role_user', 'Member (client)')
+                  : t('paragon_role_admin', 'Administrator')}
               </option>
             ))}
           </Select>
@@ -119,6 +135,8 @@ export const TeamsComponent = () => {
   const modals = useModals();
   const t = useT();
   const myLevel = user?.role === 'USER' ? 0 : user?.role === 'ADMIN' ? 1 : 2;
+  const { data: spaces } = useOrganizations();
+  const currentSpace = spaces?.find((p) => p.id === user?.orgId)?.name;
   const getLevel = useCallback(
     (role: 'USER' | 'ADMIN' | 'SUPERADMIN') =>
       role === 'USER' ? 0 : role === 'ADMIN' ? 1 : 2,
@@ -173,7 +191,12 @@ export const TeamsComponent = () => {
 
   return (
     <div className="flex flex-col">
-      <h3 className="m-0 font-heading text-[18px] font-[600] text-[#111214]">{t('team_members', 'Team Members')}</h3>
+      <h3 className="m-0 font-heading text-[18px] font-[600] text-[#111214]">
+        {t('team_members', 'Team Members')}
+        {!!currentSpace && (
+          <span className="text-[#5d616a] font-[500]"> · {currentSpace}</span>
+        )}
+      </h3>
       <div className="text-customColor18 mt-[4px]">
         {t(
           'invite_your_assistant_or_team_member_to_manage_your_account',

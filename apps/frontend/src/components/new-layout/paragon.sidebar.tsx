@@ -1,6 +1,9 @@
 'use client';
 
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useModals } from '@gitroom/frontend/components/layout/new-modal';
+import { useToaster } from '@gitroom/react/toaster/toaster';
 import useSWR from 'swr';
 import Link from 'next/link';
 import { useFetch } from '@gitroom/helpers/utils/custom.fetch';
@@ -68,27 +71,138 @@ const initials = (name: string) =>
     .join('')
     .toUpperCase();
 
-export const ParagonSpaceSelector: FC = () => {
+// Paragon Social: the spaces (organizations) of the user, one per client
+export const useOrganizations = () => {
   const fetch = useFetch();
-  const user = useUser();
-  const t = useT();
   const load = useCallback(async () => {
     return await (await fetch('/user/organizations')).json();
   }, []);
-  const { data } = useSWR('organizations', load, {
+  return useSWR<Array<{ id: string; name: string }>>('organizations', load, {
     revalidateIfStale: false,
     revalidateOnFocus: false,
     refreshWhenOffline: false,
     refreshWhenHidden: false,
     revalidateOnReconnect: false,
   });
-  const changeOrg = useCallback(async (id: string) => {
+};
+
+export const useChangeSpace = () => {
+  const fetch = useFetch();
+  return useCallback(async (id: string, path?: string) => {
     await fetch('/user/change-org', {
       method: 'POST',
       body: JSON.stringify({ id }),
     });
+    if (path) {
+      window.location.href = path;
+      return;
+    }
     window.location.reload();
   }, []);
+};
+
+const NewSpaceForm: FC = () => {
+  const fetch = useFetch();
+  const t = useT();
+  const toaster = useToaster();
+  const changeSpace = useChangeSpace();
+  const [name, setName] = useState('');
+  const [saving, setSaving] = useState(false);
+
+  const submit = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (name.trim().length < 2 || saving) {
+        return;
+      }
+      setSaving(true);
+      const failed = () => {
+        setSaving(false);
+        toaster.show(
+          t('paragon_space_error', 'Could not create the space'),
+          'warning'
+        );
+      };
+      try {
+        const response = await fetch('/user/organizations', {
+          method: 'POST',
+          body: JSON.stringify({ name: name.trim() }),
+        });
+        if (!response.ok) {
+          failed();
+          return;
+        }
+        const space = await response.json();
+        await changeSpace(space.id, '/launches');
+      } catch {
+        failed();
+      }
+    },
+    [name, saving]
+  );
+
+  return (
+    <form onSubmit={submit} className="flex flex-col gap-[16px] w-[420px] max-w-full">
+      <p className="m-0 text-[14px] text-[#5d616a] leading-[1.5]">
+        {t(
+          'paragon_space_new_hint',
+          'A space keeps the channels, posts, library and team of one client apart from the others. You will be its owner and can invite the client afterwards.'
+        )}
+      </p>
+      <label className="flex flex-col gap-[6px] text-[13px] font-[600] text-[#111214]">
+        {t('paragon_space_name', 'Client or space name')}
+        <input
+          autoFocus
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          maxLength={60}
+          placeholder={t('paragon_space_name_placeholder', 'e.g. Puro Pollo')}
+          className="h-[44px] px-[14px] rounded-[12px] border border-[#dfe1e5] bg-white text-[14px] font-[400] text-[#111214] outline-none focus:border-[#111214] transition-colors"
+        />
+      </label>
+      <button
+        type="submit"
+        disabled={name.trim().length < 2 || saving}
+        className="h-[44px] rounded-[12px] bg-[#f93b4f] hover:bg-[#e2283c] disabled:opacity-50 text-white text-[14px] font-[600]"
+      >
+        {saving
+          ? t('paragon_space_creating', 'Creating…')
+          : t('paragon_space_create', 'Create space')}
+      </button>
+    </form>
+  );
+};
+
+const NEW_SPACE = '__new__';
+const ALL_SPACES = '__all__';
+
+export const ParagonSpaceSelector: FC = () => {
+  const user = useUser();
+  const t = useT();
+  const modals = useModals();
+  const router = useRouter();
+  const { data } = useOrganizations();
+  const changeSpace = useChangeSpace();
+  const canCreate = user?.role === 'ADMIN' || user?.role === 'SUPERADMIN';
+
+  const onChange = useCallback(
+    (value: string) => {
+      if (value === NEW_SPACE) {
+        modals.openModal({
+          title: t('paragon_space_new', 'New space'),
+          withCloseButton: true,
+          children: <NewSpaceForm />,
+        });
+        return;
+      }
+      if (value === ALL_SPACES) {
+        router.push('/spaces');
+        return;
+      }
+      changeSpace(value);
+    },
+    [t]
+  );
 
   if (!data?.length) {
     return null;
@@ -99,14 +213,27 @@ export const ParagonSpaceSelector: FC = () => {
       {t('paragon_space', 'Space')}
       <select
         value={user?.orgId}
-        onChange={(e) => changeOrg(e.target.value)}
+        onChange={(e) => onChange(e.target.value)}
         className="h-[40px] rounded-[10px] border border-[#2a2d33] bg-[#1b1d21] text-white px-[12px] text-[14px] font-[500] normal-case tracking-normal cursor-pointer"
       >
-        {data.map((org: { id: string; name: string }) => (
+        {data.map((org) => (
           <option key={org.id} value={org.id}>
             {org.name}
           </option>
         ))}
+        {(canCreate || data.length > 1) && (
+          <option disabled>──────────</option>
+        )}
+        {data.length > 1 && (
+          <option value={ALL_SPACES}>
+            {t('paragon_space_all', 'See all spaces')}
+          </option>
+        )}
+        {canCreate && (
+          <option value={NEW_SPACE}>
+            + {t('paragon_space_new', 'New space')}
+          </option>
+        )}
       </select>
     </label>
   );

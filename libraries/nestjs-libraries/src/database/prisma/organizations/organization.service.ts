@@ -30,6 +30,41 @@ export class OrganizationService {
     );
   }
 
+  // Paragon Social: spaces for clients
+  createOrganizationForUser(userId: string, name: string) {
+    return this._organizationRepository.createOrganizationForUser(
+      userId,
+      name.trim()
+    );
+  }
+
+  async spacesOverview(userId: string) {
+    // this week, Monday to Sunday
+    const now = dayjs();
+    const monday = now.subtract((now.day() + 6) % 7, 'day').startOf('day');
+    const weekStart = monday.toDate();
+    const weekEnd = monday.add(6, 'day').endOf('day').toDate();
+    const orgs = await this._organizationRepository.spacesOverview(
+      userId,
+      weekStart,
+      weekEnd
+    );
+    return orgs.map((org) => {
+      const count = (state: string) =>
+        org.post.filter((p) => p.state === state).length;
+      return {
+        id: org.id,
+        name: org.name,
+        role: org.users[0]?.role,
+        channels: org._count.Integration,
+        scheduled: count('QUEUE'),
+        drafts: count('DRAFT'),
+        published: count('PUBLISHED'),
+        errors: count('ERROR'),
+      };
+    });
+  }
+
   async getCount() {
     return this._organizationRepository.getCount();
   }
@@ -127,7 +162,7 @@ export class OrganizationService {
       await this._notificationsService.sendEmail(
         body.email,
         `${user.name || user.email} te invitó a unirte a "${org.name}"`,
-        `${inviter} te invitó a unirte al equipo <strong>${org.name}</strong> en Paragon Social.<br /><br /><a href="${url}" style="display:inline-block;background:#FA3D4F;color:#ffffff;text-decoration:none;font-weight:600;font-size:15px;line-height:1;padding:14px 24px;border-radius:10px">Aceptar invitación</a><br /><br /><span style="font-size:13px;color:#8a847c">El enlace vence en 2 días.</span>`
+        `${inviter} te invitó al espacio <strong>${org.name}</strong> en Paragon Social.<br /><br /><a href="${url}" style="display:inline-block;background:#FA3D4F;color:#ffffff;text-decoration:none;font-weight:600;font-size:15px;line-height:1;padding:14px 24px;border-radius:10px">Aceptar invitación</a><br /><br /><span style="font-size:13px;color:#8a847c">El enlace vence en 2 días.</span>`
       );
     }
     return { url };

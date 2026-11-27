@@ -14,6 +14,71 @@ export class OrganizationRepository {
     private _user: PrismaRepository<'user'>
   ) {}
 
+  // Paragon Social: a new space for a client, with the creator as its owner
+  createOrganizationForUser(userId: string, name: string) {
+    return this._organization.model.organization.create({
+      data: {
+        name,
+        apiKey: AuthService.fixedEncryption(makeSecureId(20)),
+        allowTrial: false,
+        isTrailing: false,
+        users: {
+          create: {
+            role: Role.SUPERADMIN,
+            userId,
+          },
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+  }
+
+  // Paragon Social: summary of every space the user belongs to
+  spacesOverview(userId: string, weekStart: Date, weekEnd: Date) {
+    return this._organization.model.organization.findMany({
+      where: {
+        deletedAt: null,
+        users: {
+          some: {
+            userId,
+            disabled: false,
+          },
+        },
+      },
+      orderBy: {
+        name: 'asc',
+      },
+      select: {
+        id: true,
+        name: true,
+        _count: {
+          select: {
+            Integration: {
+              where: { deletedAt: null, disabled: false },
+            },
+          },
+        },
+        post: {
+          where: {
+            deletedAt: null,
+            parentPostId: null,
+            publishDate: { gte: weekStart, lte: weekEnd },
+          },
+          select: {
+            state: true,
+          },
+        },
+        users: {
+          where: { userId },
+          select: { role: true },
+        },
+      },
+    });
+  }
+
   createMaxUser(id: string, name: string, saasName: string, email: string) {
     return this._organization.model.organization.create({
       select: {
