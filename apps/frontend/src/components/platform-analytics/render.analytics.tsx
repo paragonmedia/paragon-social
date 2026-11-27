@@ -20,6 +20,8 @@ import {
   ParagonSeries,
   Sparkline,
 } from '@gitroom/frontend/components/platform-analytics/paragon.charts';
+import { stripHtmlValidation } from '@gitroom/helpers/utils/strip.html.validation';
+import { newDayjs } from '@gitroom/frontend/components/layout/set.timezone';
 
 // Paragon Social: channel analytics, built from the "Analítica" screens of
 // the Claude Design redesign. Every provider returns the same shape (a label
@@ -42,6 +44,76 @@ const useChannelAnalytics = (integrationId: string | undefined, days: number) =>
   }, [integrationId, days]);
   return useSWR<AnalyticsDataItem[]>(
     integrationId ? `/analytics-${integrationId}-${days}` : null,
+    load,
+    {
+      refreshInterval: 0,
+      refreshWhenHidden: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      revalidateIfStale: false,
+      refreshWhenOffline: false,
+      revalidateOnMount: true,
+    }
+  );
+};
+
+interface ChannelPost {
+  id: string;
+  text: string;
+  publishDate: string;
+  releaseURL?: string;
+  metrics: Record<string, number>;
+}
+
+// posts published from the app in the period, with the metrics the network
+// returns for each one (the same endpoint as the post preview statistics)
+const useChannelPosts = (integrationId: string | undefined, days: number) => {
+  const fetch = useFetch();
+  const load = useCallback(async () => {
+    const list = await (
+      await fetch(
+        `/posts/list?state=published&limit=40&integrations=${integrationId}`
+      )
+    ).json();
+    const since = newDayjs().subtract(days, 'day');
+    const posts = (list?.posts || []).filter(
+      (p: any) => p.releaseId && newDayjs(p.publishDate).isAfter(since)
+    );
+    const result: ChannelPost[] = [];
+    for (let i = 0; i < posts.length; i += 6) {
+      const chunk = await Promise.all(
+        posts.slice(i, i + 6).map(async (post: any) => {
+          try {
+            const data = await (
+              await fetch(`/analytics/post/${post.id}?date=${days}`)
+            ).json();
+            const metrics: Record<string, number> = {};
+            (Array.isArray(data) ? data : []).forEach((m: any) => {
+              metrics[m.label] = (m.data || []).reduce(
+                (acc: number, d: any) => acc + (Number(d.total) || 0),
+                0
+              );
+            });
+            return {
+              id: post.id,
+              text: stripHtmlValidation('none', post.content || '')
+                .replace(/\s+/g, ' ')
+                .trim(),
+              publishDate: post.publishDate,
+              releaseURL: post.releaseURL,
+              metrics,
+            } as ChannelPost;
+          } catch {
+            return null;
+          }
+        })
+      );
+      chunk.forEach((p) => p && result.push(p));
+    }
+    return result;
+  }, [integrationId, days]);
+  return useSWR<ChannelPost[]>(
+    integrationId ? `/analytics-posts-${integrationId}-${days}` : null,
     load,
     {
       refreshInterval: 0,
@@ -190,6 +262,270 @@ const EmptyState: FC<{ integration: Integration & { identifier?: string } }> = (
   );
 };
 
+const HEAT_COLORS = ['#fde8ea', '#fbc3ca', '#f88f9b', '#f5606f', '#e2283c', '#b42234'];
+const HOURS = [0, 3, 6, 9, 12, 15, 18, 21];
+
+const PostsInsights: FC<{ integrationId: string; days: number }> = ({
+  integrationId,
+  days,
+}) => {
+  const t = useT();
+  const { data, isLoading } = useChannelPosts(integrationId, days);
+  const posts = useMemo(
+    () => (data || []).filter((p) => Object.keys(p.metrics).length),
+    [data]
+  );
+  const labels = useMemo(() => {
+    const totals: Record<string, number> = {};
+    posts.forEach((p) =>
+      Object.entries(p.metrics).forEach(([k, v]) => {
+        totals[k] = (totals[k] || 0) + v;
+      })
+    );
+    return Object.keys(totals).sort((a, b) => totals[b] - totals[a]);
+  }, [posts]);
+  const [choice, setChoice] = useState<string | undefined>();
+  const metric = choice && labels.includes(choice) ? choice : labels[0];
+
+  const top = useMemo(
+    () =>
+      [...posts]
+        .sort((a, b) => (b.metrics[metric] || 0) - (a.metrics[metric] || 0))
+        .slice(0, 8),
+    [posts, metric]
+  );
+
+  const heat = useMemo(() => {
+    const cells: Array<Array<{ sum: number; count: number }>> = Array.from(
+      { length: 7 },
+      () => HOURS.map(() => ({ sum: 0, count: 0 }))
+    );
+    posts.forEach((p) => {
+      const d = newDayjs(p.publishDate);
+      const day = (d.day() + 6) % 7;
+      const bucket = Math.min(7, Math.floor(d.hour() / 3));
+      cells[day][bucket].sum += p.metrics[metric] || 0;
+      cells[day][bucket].count += 1;
+    });
+    const avgs = cells.map((row) =>
+      row.map((c) => (c.count ? c.sum / c.count : undefined))
+    );
+    const max = Math.max(0, ...avgs.flat().map((v) => v || 0));
+    let best: { day: number; bucket: number } | undefined;
+    avgs.forEach((row, day) =>
+      row.forEach((v, bucket) => {
+        if (v !== undefined && max > 0 && v === max && !best) {
+          best = { day, bucket };
+        }
+      })
+    );
+    return { avgs, max, best };
+  }, [posts, metric]);
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardTitle title={t('paragon_analytics_top_posts', 'Top posts')} />
+        <div className="flex items-center justify-center py-[32px]">
+          <LoadingComponent />
+        </div>
+      </Card>
+    );
+  }
+
+  if (!posts.length) {
+    return (
+      <Card>
+        <CardTitle
+          title={t('paragon_analytics_top_posts', 'Top posts')}
+          subtitle={t(
+            'paragon_analytics_top_posts_empty',
+            'Post rankings and the best time to post appear here once you publish from Paragon Social in this period.'
+          )}
+        />
+      </Card>
+    );
+  }
+
+  const dayNames = Array.from({ length: 7 }, (_, i) =>
+    newDayjs().day((i + 1) % 7).format('ddd')
+  );
+  const columns = labels.slice(0, 4);
+
+  return (
+    <>
+      <Card>
+        <div className="flex flex-wrap items-start justify-between gap-[12px]">
+          <CardTitle
+            title={t('paragon_analytics_top_posts', 'Top posts')}
+            subtitle={t(
+              'paragon_analytics_top_posts_hint',
+              'Posts published from Paragon Social in this period'
+            )}
+          />
+          <label className="flex items-center gap-[8px] h-[36px] ps-[12px] pe-[4px] rounded-[10px] border border-[#dfe1e5] bg-white text-[13px]">
+            <span className="text-[#5d616a]">
+              {t('paragon_analytics_sort_by', 'Sort by')}
+            </span>
+            <select
+              value={metric}
+              onChange={(e) => setChoice(e.target.value)}
+              className="h-[28px] bg-transparent text-[#111214] font-[500] outline-none cursor-pointer"
+            >
+              {labels.map((l) => (
+                <option key={l} value={l}>
+                  {l}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[640px] border-collapse text-[13px]">
+            <thead>
+              <tr className="text-start text-[#5d616a]">
+                <th className="text-start font-[500] py-[8px] px-[6px]">
+                  {t('paragon_analytics_post', 'Post')}
+                </th>
+                <th className="text-start font-[500] py-[8px] px-[6px]">
+                  {t('paragon_analytics_date', 'Date')}
+                </th>
+                {columns.map((c) => (
+                  <th
+                    key={c}
+                    className={clsx(
+                      'text-end font-[500] py-[8px] px-[6px]',
+                      c === metric && 'text-[#111214]'
+                    )}
+                  >
+                    {c}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {top.map((p, i) => (
+                <tr key={p.id} className="border-t border-[#f1f2f4]">
+                  <td className="py-[10px] px-[6px]">
+                    <div className="flex items-center gap-[12px]">
+                      <span
+                        className={clsx(
+                          'w-[28px] h-[28px] shrink-0 rounded-[8px] grid place-items-center text-[12px] font-[700]',
+                          i < 3
+                            ? 'bg-[#fff5f6] text-[#d42a3e]'
+                            : 'bg-[#f6f7f8] text-[#5d616a]'
+                        )}
+                      >
+                        {i + 1}
+                      </span>
+                      {p.releaseURL ? (
+                        <a
+                          href={p.releaseURL}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="font-[500] text-[#111214] hover:text-[#f93b4f] line-clamp-2 max-w-[420px]"
+                        >
+                          {p.text || '—'}
+                        </a>
+                      ) : (
+                        <span className="font-[500] text-[#111214] line-clamp-2 max-w-[420px]">
+                          {p.text || '—'}
+                        </span>
+                      )}
+                    </div>
+                  </td>
+                  <td className="py-[10px] px-[6px] text-[#5d616a] whitespace-nowrap">
+                    {newDayjs(p.publishDate).format('D MMM')}
+                  </td>
+                  {columns.map((c) => (
+                    <td
+                      key={c}
+                      className={clsx(
+                        'py-[10px] px-[6px] text-end tabular-nums',
+                        c === metric ? 'font-[600] text-[#111214]' : 'text-[#5d616a]'
+                      )}
+                    >
+                      {p.metrics[c] === undefined ? '—' : formatNumber(p.metrics[c])}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+
+      <Card>
+        <div className="flex flex-wrap items-start justify-between gap-[12px]">
+          <CardTitle
+            title={t('paragon_analytics_best_time', 'Best time to post')}
+            subtitle={t(
+              'paragon_analytics_best_time_hint',
+              'Average {{metric}} by day and time, based on {{count}} posts',
+              { metric, count: posts.length }
+            )}
+          />
+          {!!heat.best && (
+            <span className="px-[12px] py-[8px] rounded-[12px] bg-[#fff5f6] text-[#b42234] text-[13px] font-[500]">
+              {t('paragon_analytics_best', 'Best')}: {dayNames[heat.best.day]}{' '}
+              {String(HOURS[heat.best.bucket]).padStart(2, '0')}:00–
+              {String(HOURS[heat.best.bucket] + 3).padStart(2, '0')}:00
+            </span>
+          )}
+        </div>
+        <div className="overflow-x-auto">
+          <div className="grid grid-cols-[44px_repeat(8,minmax(44px,1fr))] gap-[4px] min-w-[440px]">
+            <span />
+            {HOURS.map((h) => (
+              <span key={h} className="text-[11px] text-[#8a8e96] text-center">
+                {String(h).padStart(2, '0')}:00
+              </span>
+            ))}
+            {heat.avgs.map((row, day) => (
+              <div key={day} className="contents">
+                <span className="text-[12px] text-[#5d616a] flex items-center capitalize">
+                  {dayNames[day]}
+                </span>
+                {row.map((v, bucket) => {
+                  const level =
+                    v === undefined || !heat.max
+                      ? -1
+                      : Math.min(5, Math.floor((v / heat.max) * 5.999));
+                  return (
+                    <span
+                      key={bucket}
+                      title={
+                        v === undefined
+                          ? ''
+                          : `${dayNames[day]} ${HOURS[bucket]}:00 · ${formatNumber(v)} ${metric}`
+                      }
+                      className="block aspect-[1.6] rounded-[6px] transition-transform hover:scale-110"
+                      style={{
+                        background: level < 0 ? '#f6f7f8' : HEAT_COLORS[level],
+                      }}
+                    />
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="flex items-center gap-[8px] text-[12px] text-[#5d616a]">
+          {t('paragon_analytics_less', 'Less')}
+          {HEAT_COLORS.map((c) => (
+            <span key={c} className="w-[16px] h-[12px] rounded-[4px]" style={{ background: c }} />
+          ))}
+          {t('paragon_analytics_more', 'More')}
+          <span className="ms-[12px] flex items-center gap-[6px]">
+            <span className="w-[16px] h-[12px] rounded-[4px] bg-[#f6f7f8] border border-[#eceef1]" />
+            {t('paragon_analytics_no_posts', 'No posts')}
+          </span>
+        </div>
+      </Card>
+    </>
+  );
+};
+
 export const RenderAnalytics: FC<{
   integration: Integration & { identifier?: string };
   date: number;
@@ -328,6 +664,7 @@ export const RenderAnalytics: FC<{
           )}
         </section>
       )}
+      <PostsInsights integrationId={integration.id} days={date} />
     </div>
   );
 };

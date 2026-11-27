@@ -975,5 +975,17 @@
   "paragon_analytics_all_channels": "Todos los canales",
   "paragon_analytics_last_days": "Últimos {{days}} días",
   "paragon_analytics_period": "Periodo",
-  "paragon_analytics_summary": "Resumen"
+  "paragon_analytics_summary": "Resumen",
+  "paragon_analytics_top_posts": "Mejores publicaciones",
+  "paragon_analytics_top_posts_empty": "El ranking de publicaciones y la mejor hora para publicar aparecen aquí cuando publicas desde Paragon Social en este periodo.",
+  "paragon_analytics_top_posts_hint": "Publicaciones hechas desde Paragon Social en este periodo",
+  "paragon_analytics_sort_by": "Ordenar por",
+  "paragon_analytics_post": "Publicación",
+  "paragon_analytics_date": "Fecha",
+  "paragon_analytics_best_time": "Mejor momento para publicar",
+  "paragon_analytics_best_time_hint": "{{metric}} promedio por día y hora, con base en {{count}} publicaciones",
+  "paragon_analytics_best": "Mejor",
+  "paragon_analytics_less": "Menos",
+  "paragon_analytics_more": "Más",
+  "paragon_analytics_no_posts": "Sin publicaciones"
 }
