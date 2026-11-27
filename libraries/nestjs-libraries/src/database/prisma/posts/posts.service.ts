@@ -1238,17 +1238,28 @@ export class PostsService {
             mediaOf(old.image) !== mediaOf(value.image)
           );
         });
+      // only the dashboard's draft/schedule saves follow the approval: an
+      // "update" leaves the post as it is, and the API, the agent and
+      // "post now" schedule on their own
       const approval: PostApproval =
-        body.requestApproval && body.type === 'draft'
+        body.type === 'update'
+          ? previousApproval
+          : body.requestApproval && body.type === 'draft'
           ? 'PENDING'
-          : body.skipApproval || previousApproval === 'NONE'
+          : creationMethod !== 'WEB' ||
+            body.type === 'now' ||
+            body.skipApproval ||
+            previousApproval === 'NONE'
           ? 'NONE'
           : !changed &&
             (previousApproval === 'APPROVED' || previousApproval === 'CHANGES')
           ? previousApproval
           : 'PENDING';
       const saveType =
-        approval === 'PENDING' || approval === 'CHANGES' ? 'draft' : body.type;
+        body.type !== 'update' &&
+        (approval === 'PENDING' || approval === 'CHANGES')
+          ? 'draft'
+          : body.type;
 
       const { posts } = await this._postRepository.createOrUpdatePost(
         saveType,
@@ -1273,7 +1284,7 @@ export class PostsService {
         posts.filter((p) => existingIds.includes(p.id))
       );
 
-      if (approval !== 'NONE' || previousApproval !== 'NONE') {
+      if (approval !== previousApproval || approval === 'PENDING') {
         await this._postRepository.setPostsApproval(
           orgId,
           posts.map((p) => p.id),

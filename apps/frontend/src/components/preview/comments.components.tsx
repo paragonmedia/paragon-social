@@ -232,7 +232,7 @@ const CommentComposer: FC<{
         setLoading(false);
       }
     },
-    [identify, previewId, user, onApproval]
+    [identify, previewId, user, onApproval, form, mutate, t]
   );
 
   const submit = useCallback(
@@ -608,7 +608,7 @@ export const CommentsComponents: FC<{
           : t('paragon_changes_toast', 'Thanks, the team got your changes.')
       );
     },
-    [t]
+    [t, toast]
   );
 
   const threads = useMemo(() => {
@@ -662,7 +662,16 @@ export const CommentsComponents: FC<{
           </span>
         )}
       </div>
-      <CommentComposer {...(waiting ? { onApproval } : {})} />
+      {/* the team answers from the editor, the buttons are for the client */}
+      {waiting && !!user?.id && (
+        <div className="text-[13px] text-[#8a5a00] bg-[#fff4e0] rounded-[12px] px-[14px] py-[10px]">
+          {t(
+            'paragon_team_waiting_client',
+            'Waiting for the client to approve this post from this link.'
+          )}
+        </div>
+      )}
+      <CommentComposer {...(waiting && !user?.id ? { onApproval } : {})} />
       {!isLoading && !threads.length && (
         <div className="text-[13px] text-textItemBlur">
           {t(

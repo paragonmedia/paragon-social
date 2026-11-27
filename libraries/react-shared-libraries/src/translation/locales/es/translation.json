@@ -1125,5 +1125,6 @@
   "paragon_send_changes": "Enviar cambios",
   "paragon_approved_toast": "Aprobada. La publicación quedó programada.",
   "paragon_approved_toast_late": "Aprobada. Como la fecha ya pasó, el equipo le pondrá una nueva.",
-  "paragon_changes_toast": "Gracias, el equipo recibió tus cambios."
+  "paragon_changes_toast": "Gracias, el equipo recibió tus cambios.",
+  "paragon_team_waiting_client": "Esperando a que el cliente apruebe esta publicación desde este link."
 }

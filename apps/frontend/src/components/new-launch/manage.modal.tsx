@@ -987,6 +987,7 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
       addEditSets,
       dummy,
       shortlinkPreferenceData,
+      waitingApproval,
     ]
   );
 
