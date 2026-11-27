@@ -1065,5 +1065,9 @@
   "paragon_metric_pin_clicks": "Pin Clicks",
   "paragon_metric_pin_click_rate": "Pin click rate",
   "paragon_metric_outbound_clicks": "Outbound Clicks",
-  "paragon_assistant_placeholder": "Ask it to improve, shorten or translate your post…"
+  "paragon_assistant_placeholder": "Ask it to improve, shorten or translate your post…",
+  "paragon_text_for": "Text for",
+  "paragon_text_all": "All channels",
+  "paragon_text_all_hint": "The same text goes to every selected channel",
+  "paragon_remove_channel": "Remove channel"
 }

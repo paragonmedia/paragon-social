@@ -12,7 +12,10 @@ import {
   PlatformIcon,
 } from '@gitroom/frontend/components/ui/platform.icon.component';
 import { useShallow } from 'zustand/react/shallow';
-import { GlobalIcon } from '@gitroom/frontend/components/ui/icons';
+import {
+  networkName,
+  PARAGON_NETWORK_COLORS,
+} from '@gitroom/frontend/components/new-layout/paragon.sidebar';
 import { useT } from '@gitroom/react/translation/get.transation.service.client';
 import { Integrations } from '@gitroom/frontend/components/launches/calendar.context';
 import { useExistingData } from '@gitroom/frontend/components/launches/helpers/use.existing.data';
@@ -56,6 +59,7 @@ export function useHasScroll(ref: RefObject<HTMLElement | null>): boolean {
 }
 
 export const SelectCurrent: FC = () => {
+  const t = useT();
   const modals = useDecisionModal();
   const existingData = useExistingData();
   const {
@@ -104,29 +108,42 @@ export const SelectCurrent: FC = () => {
         <div
           ref={contentRef}
           className={clsx(
-            'flex gap-[6px] mobile:gap-[4px] w-full overflow-x-auto scrollbar scrollbar-thumb-tableBorder scrollbar-track-secondary mobile:scrollbar-none',
+            'flex items-center gap-[8px] mobile:gap-[4px] w-full overflow-x-auto pt-[8px] pe-[8px] scrollbar scrollbar-thumb-tableBorder scrollbar-track-secondary mobile:scrollbar-none',
             locked && 'pointer-events-none'
           )}
         >
           {/* an existing post opens on its channels, without the global mode */}
+          {/* Paragon Social: the text tabs, "all channels" or one channel */}
+          <span className="shrink-0 text-[13px] font-[600] text-[#111214] me-[4px] mobile:hidden">
+            {t('paragon_text_for', 'Text for')}
+          </span>
           {!existingData.integration && (
-            <div
+            <button
+              type="button"
               onClick={() => {
                 setHide(true);
                 setCurrent('global');
               }}
+              data-tooltip-id="tooltip"
+              data-tooltip-content={t(
+                'paragon_text_all_hint',
+                'The same text goes to every selected channel'
+              )}
               className={clsx(
-                'cursor-pointer flex gap-[8px] rounded-[8px] w-[40px] h-[40px] mobile:w-[44px] mobile:h-[44px] mobile:shrink-0 justify-center items-center bg-newBgLineColor mobile:bg-newSettings',
-                current !== 'global'
-                  ? 'text-[#A3A3A3]'
-                  : 'border mobile:border-[1.5px] border-[#FA3D4F] text-[#FA3D4F]',
+                'shrink-0 flex items-center gap-[8px] h-[40px] px-[14px] rounded-full border text-[13px] transition-colors mobile:h-[44px]',
+                current === 'global'
+                  ? 'bg-white border-[#111214] text-[#111214] font-[600] shadow-[inset_0_0_0_1px_#111214]'
+                  : 'bg-[#f6f7f8] border-[#eceef1] text-[#5d616a] font-[500] hover:bg-white',
                 locked && 'opacity-50'
               )}
             >
-              <div>
-                <GlobalIcon className="mobile:w-[24px] mobile:h-[24px]" />
-              </div>
-            </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="m12 2 10 5-10 5L2 7z" />
+                <path d="m2 17 10 5 10-5" />
+                <path d="m2 12 10 5 10-5" />
+              </svg>
+              {t('paragon_text_all', 'All channels')}
+            </button>
           )}
           {/* a locked tab is dimmed, a brand mark can't be: only its avatar is
               (see isBrandMark). It is also bigger than the avatar of a tab, so
@@ -139,25 +156,28 @@ export const SelectCurrent: FC = () => {
               }}
               key={integration.id}
               className={clsx(
-                'border mobile:border-[1.5px] cursor-pointer relative flex gap-[8px] h-[40px] mobile:h-[44px] mobile:shrink-0 rounded-[8px] items-center bg-newBgLineColor mobile:bg-newSettings justify-center',
-                isBrandMark(integration.identifier)
-                  ? 'px-[6px] shrink-0'
-                  : 'w-[40px] mobile:w-[44px]',
+                'group/tab shrink-0 border cursor-pointer relative flex gap-[8px] h-[40px] mobile:h-[44px] rounded-full items-center ps-[5px] pe-[14px] text-[13px] transition-colors',
                 !isBrandMark(integration.identifier) && locked && 'opacity-50',
                 current === integration.id
-                  ? 'border-[#FA3D4F] text-[#FA3D4F]'
-                  : 'border-transparent'
+                  ? 'bg-white border-[#111214] text-[#111214] font-[600] shadow-[inset_0_0_0_1px_#111214]'
+                  : 'bg-[#f6f7f8] border-[#eceef1] text-[#5d616a] font-[500] hover:bg-white'
               )}
             >
               {/* an existing post keeps its channels, each with its own content */}
               {!existingData.integration && (
                 <>
-                  <div
+                  <button
+                    type="button"
                     onClick={removeSocial(integration)}
-                    className="absolute justify-center items-center flex mobile:hidden w-[8px] h-[8px] -top-[1px] -start-[3px] bg-red-500 rounded-full text-white text-[8px]"
+                    aria-label={t('paragon_remove_channel', 'Remove channel')}
+                    data-tooltip-id="tooltip"
+                    data-tooltip-content={t('paragon_remove_channel', 'Remove channel')}
+                    className="absolute z-20 -top-[7px] -end-[7px] w-[20px] h-[20px] rounded-full bg-[#111214] text-white flex items-center justify-center border-[2px] border-white shadow-[0_2px_6px_rgba(17,18,20,.25)] hover:scale-110 transition-transform mobile:hidden"
                   >
-                    X
-                  </div>
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" aria-hidden="true">
+                      <path d="M6 6l12 12M18 6 6 18" />
+                    </svg>
+                  </button>
                   <IsGlobal id={integration.id} />
                 </>
               )}
@@ -167,44 +187,42 @@ export const SelectCurrent: FC = () => {
                   'data-tooltip-content': integration.name,
                 }}
                 className={clsx(
-                  'relative w-full h-full rounded-full flex justify-center items-center filter transition-all duration-500',
-                  isBrandMark(integration.identifier) && 'gap-[6px]'
+                  'relative h-full rounded-full flex items-center gap-[8px] filter transition-all duration-500'
                 )}
               >
                 <SafeImage
                   src={integration.picture || '/no-picture.jpg'}
                   className={clsx(
-                    'rounded-full min-w-[26px]',
+                    'rounded-full min-w-[28px] w-[28px] h-[28px] object-cover',
                     isBrandMark(integration.identifier) &&
                       locked &&
                       'opacity-50'
                   )}
                   alt={integration.identifier}
-                  width={26}
-                  height={26}
+                  width={28}
+                  height={28}
                   onError={(e) => {
                     e.currentTarget.src = '/no-picture.jpg';
                     e.currentTarget.srcset = '/no-picture.jpg';
                   }}
                 />
-                <PlatformIcon
-                  identifier={integration.identifier}
-                  size={12}
-                  inactive={locked}
-                  className={clsx(
-                    !isBrandMark(integration.identifier) &&
-                      'absolute z-10 bottom-[6px] end-[6px]'
-                  )}
-                  iconClassName="min-w-[12px] min-h-[12px] rounded-[3px]"
-                  markClassName="bg-newBgLineColor mobile:bg-newSettings"
+                <span
+                  className="absolute start-[20px] bottom-[4px] w-[10px] h-[10px] rounded-full border-[2px] border-white"
+                  style={{
+                    background:
+                      PARAGON_NETWORK_COLORS[integration.identifier] || '#5d616a',
+                  }}
                 />
+                <span className="whitespace-nowrap">
+                  {integration.name} · {networkName(integration.identifier)}
+                </span>
               </div>
             </div>
           ))}
         </div>
       </div>
       <div
-        className={clsx(hasScroll ? 'h-[55px]' : 'h-[40px]', 'mobile:hidden')}
+        className={clsx(hasScroll ? 'h-[63px]' : 'h-[48px]', 'mobile:hidden')}
       />
     </>
   );
@@ -229,7 +247,7 @@ export const IsGlobal: FC<{ id: string }> = ({ id }) => {
         'no_longer_global_mode',
         'No longer in global mode'
       )}
-      className="w-[8px] h-[8px] bg-[#FA3D4F] -top-[1px] -end-[3px] absolute rounded-full"
+      className="w-[10px] h-[10px] bg-[#f93b4f] border-[2px] border-white -top-[2px] start-[2px] absolute rounded-full z-10"
     />
   );
 };
