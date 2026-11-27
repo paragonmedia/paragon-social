@@ -960,5 +960,20 @@
   "paragon_stat_published": "Published",
   "paragon_stat_channels": "Connected channels",
   "paragon_summary": "Summary",
-  "paragon_failed": "Failed"
+  "paragon_failed": "Failed",
+  "paragon_analytics_metrics": "Metrics",
+  "paragon_analytics_period_total": "Total for the period",
+  "paragon_analytics_daily": "Daily performance",
+  "paragon_analytics_daily_hint": "Combine two metrics: one as bars and one as a line, each with its own scale",
+  "paragon_analytics_bars": "Bars",
+  "paragon_analytics_line": "Line",
+  "paragon_analytics_breakdown": "Breakdown",
+  "paragon_analytics_breakdown_hint": "Totals for the period, from highest to lowest",
+  "paragon_analytics_open": "View details",
+  "paragon_analytics_no_data": "No data for this period",
+  "paragon_analytics_reconnect": "Please reconnect the channel from the calendar",
+  "paragon_analytics_all_channels": "All channels",
+  "paragon_analytics_last_days": "Last {{days}} days",
+  "paragon_analytics_period": "Period",
+  "paragon_analytics_summary": "Summary"
 }

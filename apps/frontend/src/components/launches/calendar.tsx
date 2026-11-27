@@ -67,6 +67,10 @@ import {
 } from '@gitroom/frontend/components/layout/set.timezone';
 import { Button } from '@gitroom/react/form/button';
 import { ChevronUpIcon } from '@gitroom/frontend/components/ui/icons';
+import {
+  PARAGON_NETWORK_COLORS,
+  paragonNetworkShort,
+} from '@gitroom/frontend/components/new-layout/paragon.sidebar';
 
 // Extend dayjs with necessary plugins
 extend(isSameOrAfter);
@@ -103,35 +107,6 @@ export const hours = Array.from(
 );
 
 // The current time badge at the start of the now line
-// Paragon Social: network colors and short names of the design's post cards
-const PARAGON_NETWORK_COLORS: Record<string, string> = {
-  facebook: '#1f5fd1',
-  instagram: '#b5306b',
-  'instagram-standalone': '#b5306b',
-  linkedin: '#0a66c2',
-  'linkedin-page': '#0a66c2',
-  tiktok: '#111214',
-  x: '#111214',
-  threads: '#111214',
-  youtube: '#d42a3e',
-  pinterest: '#c8232c',
-};
-const PARAGON_NETWORK_SHORT: Record<string, string> = {
-  facebook: 'FB',
-  instagram: 'IG',
-  'instagram-standalone': 'IG',
-  linkedin: 'IN',
-  'linkedin-page': 'IN',
-  tiktok: 'TT',
-  x: 'X',
-  youtube: 'YT',
-  threads: 'TH',
-  pinterest: 'PI',
-};
-const paragonNetworkShort = (identifier?: string) =>
-  PARAGON_NETWORK_SHORT[identifier || ''] ||
-  (identifier || '').slice(0, 2).toUpperCase();
-
 const NowTime: FC<{ time: string }> = ({ time }) => (
   <div className="rounded-[6px] bg-newTableTextFocused px-[6px] text-[12px] leading-[20px] font-[500] text-white whitespace-nowrap">
     {time}

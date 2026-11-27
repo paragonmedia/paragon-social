@@ -925,3 +925,16 @@ html[dir='rtl'] [dir='ltr'] {
 .preview-comment-cursor {
   cursor: url("data:image/svg+xml,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22 width%3D%2228%22 height%3D%2228%22 viewBox%3D%220 0 28 28%22%3E%3Cg fill%3D%22none%22 stroke-linecap%3D%22round%22 stroke-linejoin%3D%22round%22%3E%3Cpath d%3D%22M3 4h6M3 24h6M6 4v20%22 stroke%3D%22%23fff%22 stroke-width%3D%224%22%2F%3E%3Cpath d%3D%22M3 4h6M3 24h6M6 4v20%22 stroke%3D%22%23000%22 stroke-width%3D%221.6%22%2F%3E%3Cpath d%3D%22M14 4h10a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-6l-4 3v-3a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z%22 fill%3D%22%23612bd3%22 stroke%3D%22%23fff%22 stroke-width%3D%221.5%22%2F%3E%3Cpath d%3D%22M17 8h6M17 11h4%22 stroke%3D%22%23fff%22 stroke-width%3D%221.5%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") 6 14, text;
 }
+
+/* Paragon Social: chart entrance animations (analytics) */
+@keyframes paragon-grow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@keyframes paragon-grow-x { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes paragon-draw { from { stroke-dashoffset: var(--len, 1200); } to { stroke-dashoffset: 0; } }
+@keyframes paragon-fade { from { opacity: 0; } to { opacity: 1; } }
+.paragon-grow { transform-box: fill-box; transform-origin: 50% 100%; animation: paragon-grow .7s cubic-bezier(.2,.9,.3,1) both; }
+.paragon-grow-x { transform-origin: 0 50%; animation: paragon-grow-x .7s cubic-bezier(.2,.9,.3,1) both; }
+.paragon-draw { stroke-dasharray: var(--len, 1200); animation: paragon-draw 1.2s ease-out both .15s; }
+.paragon-fade { animation: paragon-fade .6s ease-out both .4s; }
+@media (prefers-reduced-motion: reduce) {
+  .paragon-grow, .paragon-grow-x, .paragon-draw, .paragon-fade { animation: none; }
+}

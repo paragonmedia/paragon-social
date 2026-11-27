@@ -11,6 +11,35 @@ import { useIntegrationList } from '@gitroom/frontend/components/launches/helper
 // Paragon Social: pieces of the dark sidebar from the design
 // ("Espacio" selector and the "Canales" list).
 
+// Paragon Social: network colors and short names of the design's post cards
+export const PARAGON_NETWORK_COLORS: Record<string, string> = {
+  facebook: '#1f5fd1',
+  instagram: '#b5306b',
+  'instagram-standalone': '#b5306b',
+  linkedin: '#0a66c2',
+  'linkedin-page': '#0a66c2',
+  tiktok: '#111214',
+  x: '#111214',
+  threads: '#111214',
+  youtube: '#d42a3e',
+  pinterest: '#c8232c',
+};
+const PARAGON_NETWORK_SHORT: Record<string, string> = {
+  facebook: 'FB',
+  instagram: 'IG',
+  'instagram-standalone': 'IG',
+  linkedin: 'IN',
+  'linkedin-page': 'IN',
+  tiktok: 'TT',
+  x: 'X',
+  youtube: 'YT',
+  threads: 'TH',
+  pinterest: 'PI',
+};
+export const paragonNetworkShort = (identifier?: string) =>
+  PARAGON_NETWORK_SHORT[identifier || ''] ||
+  (identifier || '').slice(0, 2).toUpperCase();
+
 const NETWORK_NAMES: Record<string, string> = {
   facebook: 'Facebook',
   instagram: 'Instagram',
