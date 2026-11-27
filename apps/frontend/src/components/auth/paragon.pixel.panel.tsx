@@ -10,7 +10,7 @@ const COLORS = [
   [249, 59, 79],
   [255, 107, 124],
   [255, 179, 188],
-  [255, 255, 255],
+  [255, 228, 231],
 ];
 const CELL = 10;
 
@@ -105,8 +105,8 @@ export const ParagonPixelPanel = () => {
             target = Math.max(target, 0.55);
           }
           p.v += (target - p.v) * (target > p.v ? 0.3 : 0.025);
-          ctx.globalAlpha = 0.06;
-          ctx.fillStyle = '#ffffff';
+          ctx.globalAlpha = 0.05;
+          ctx.fillStyle = '#141414';
           ctx.fillRect(x, y, CELL - 2, CELL - 2);
           if (p.v > 0.02) {
             p.ph = (p.ph + 0.002) % 1;
@@ -142,7 +142,7 @@ export const ParagonPixelPanel = () => {
   }, []);
 
   return (
-    <div className="relative overflow-hidden flex-1 hidden lg:flex flex-col justify-end rounded-[12px] bg-[#111214] p-[56px]">
+    <div className="relative overflow-hidden flex-1 hidden lg:flex flex-col justify-end rounded-[12px] bg-[#FBFAF8] border border-[#EBE7E2] text-[#141414] p-[56px]">
       <div ref={boxRef} aria-hidden="true" className="absolute inset-0">
         <canvas ref={canvasRef} className="block w-full h-full" />
       </div>
@@ -151,17 +151,17 @@ export const ParagonPixelPanel = () => {
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            'linear-gradient(to top, #111214 18%, rgba(17,18,20,0.55) 45%, rgba(17,18,20,0) 75%)',
+            'linear-gradient(to top, #FBFAF8 18%, rgba(251,250,248,0.6) 45%, rgba(251,250,248,0) 75%)',
         }}
       />
       <div className="relative flex flex-col gap-[18px] max-w-[480px]">
-        <span className="self-start px-[12px] py-[6px] rounded-full bg-white/10 text-[12px] font-[500]">
+        <span className="self-start px-[12px] py-[6px] rounded-full bg-[#141414]/[0.06] text-[12px] font-[500]">
           {t('paragon_auth_badge', 'AI growth agency · USA · MX')}
         </span>
         <p className="m-0 text-[40px] leading-[1.1] font-[600] -tracking-[0.8px]">
           {t('paragon_auth_headline', 'All your channels, one calendar.')}
         </p>
-        <p className="m-0 text-[15px] leading-[1.55] text-[#c6c9cf]">
+        <p className="m-0 text-[15px] leading-[1.55] text-[#5C5852]">
           {t(
             'paragon_auth_body',
             'Plan, approve and publish on Facebook, Instagram, LinkedIn and more, for your brand and for your clients.'

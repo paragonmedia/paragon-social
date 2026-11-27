@@ -27,6 +27,8 @@ import { ChangeDirClient } from '@gitroom/frontend/components/new-layout/change.
 export default async function AppLayout({ children }: { children: ReactNode }) {
   const cookieStore = await cookies();
   const language = cookieStore.get(cookieName)?.value || fallbackLng;
+  // Paragon Social: light mode by default
+  const mode = cookieStore.get('mode')?.value === 'dark' ? 'dark' : 'light';
   const Plausible = !!process.env.STRIPE_PUBLISHABLE_KEY
     ? PlausibleProvider
     : Fragment;
@@ -45,7 +47,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
       </head>
       <ChangeDirClient />
       <body
-        className={clsx(jakartaSans.className, 'dark text-primary !bg-primary')}
+        className={clsx(jakartaSans.className, mode, 'text-primary !bg-primary')}
       >
         <VariableContextComponent
           storageProvider={

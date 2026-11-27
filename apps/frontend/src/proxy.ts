@@ -108,8 +108,12 @@ export async function proxy(request: NextRequest) {
             : 'github'
           : findIndex
         ).toUpperCase()}`;
+    // Paragon Social: people without a session land on the login page; only a
+    // team invitation (org) or a social sign-in (provider) goes to sign up
+    const toSignUp =
+      !!org || !!additional || !!request.cookies.get('org')?.value;
     return NextResponse.redirect(
-      new URL(`/auth${url}${additional}`, nextUrl.href)
+      new URL(`/auth${toSignUp ? '' : '/login'}${url}${additional}`, nextUrl.href)
     );
   }
 
