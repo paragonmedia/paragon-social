@@ -1012,5 +1012,7 @@
   "paragon_agent_new": "Nueva conversación",
   "paragon_agent_threads": "Conversaciones",
   "paragon_agent_placeholder": "Escribe una idea o pide una semana de contenido…",
-  "search_media_by_name": "Buscar archivos"
+  "search_media_by_name": "Buscar archivos",
+  "paragon_publish_in": "Publicar en",
+  "paragon_improve_ai": "Mejorar con IA"
 }

@@ -1095,6 +1095,25 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
             </span>
           </div>
           <div className="flex items-center justify-end gap-[10px]">
+            {!dummy && (
+              <button
+                type="button"
+                onClick={() =>
+                  document
+                    .querySelector<HTMLElement>(
+                      '.paragon-composer-ai .copilotKitButton'
+                    )
+                    ?.click()
+                }
+                className="h-[44px] px-[16px] rounded-[12px] border border-[#fbc3ca] bg-[#fff5f6] hover:bg-[#fde8ea] text-[#b42234] text-[14px] font-[600] flex items-center gap-[8px]"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                  <path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z" />
+                  <path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z" />
+                </svg>
+                {t('paragon_improve_ai', 'Improve with AI')}
+              </button>
+            )}
             {existingData?.integration && (
               <button
                 onClick={deletePost}
@@ -1219,11 +1238,14 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
                 >
                   <div
                     className={clsx(
-                      'flex w-full',
+                      'flex w-full gap-[12px] bg-white border border-[#eceef1] rounded-[16px] p-[20px] mobile:bg-transparent mobile:border-0 mobile:p-0',
                       !existingData.integration && 'mobile:hidden'
                     )}
                   >
-                    <div className="flex flex-1">
+                    <div className="flex flex-1 flex-col gap-[12px]">
+                      <span className="text-[13px] font-[600] text-[#111214] mobile:hidden">
+                        {t('paragon_publish_in', 'Publish in')}
+                      </span>
                       <PicksSocialsComponent toolTip={true} />
                     </div>
                     <div className="mobile:hidden">
@@ -1522,7 +1544,7 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
         </BottomSheet>
       )}
       <CopilotPopup
-        className="!bottom-[100px] !end-[44px] mobile:!z-[460] mobile:!bottom-[112px] mobile:!end-[16px] [&_.copilotKitButton]:!w-[48px] [&_.copilotKitButton]:!h-[48px] [&_.copilotKitButton]:!bg-[#111214]"
+        className="paragon-composer-ai !bottom-[24px] !end-[24px] mobile:!z-[460] mobile:!bottom-[112px] mobile:!end-[16px] [&_.copilotKitButton]:!hidden mobile:[&_.copilotKitButton]:!flex [&_.copilotKitButton]:!bg-[#111214]"
         hitEscapeToClose={false}
         clickOutsideToClose={true}
         instructions={`
