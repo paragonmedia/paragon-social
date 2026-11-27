@@ -109,20 +109,14 @@ export const AgentList: FC<{ onChange: (arr: any[]) => void }> = ({
 
   return (
     <div
-      className={clsx(
-        'trz bg-newBgColorInner flex flex-col gap-[15px] transition-all relative mobile:w-full mobile:order-1',
-        collapseMenu === '1' ? 'group sidebar w-[100px]' : 'w-[260px]'
-      )}
+      className="flex flex-col gap-[10px] w-full mobile:order-1"
     >
-      <div className="absolute top-0 start-0 w-full h-full p-[20px] mobile:p-[12px] mobile:static mobile:h-auto overflow-auto scrollbar scrollbar-thumb-fifth scrollbar-track-newBgColor">
+      <div className="flex flex-col gap-[10px]">
         <div className="flex items-center mobile:hidden">
-          <h2 className="group-[.sidebar]:hidden flex-1 text-[20px] font-[500] mb-[15px]">
-            {t('select_channels', 'Select Channels')}
+          <h2 className="flex-1 m-0 text-[11px] tracking-[0.08em] uppercase font-[500] text-[#8a8e96] px-[4px]">
+            {t('paragon_agent_channels', 'Channels the agent can use')}
           </h2>
-          <div
-            onClick={() => setCollapseMenu(collapseMenu === '1' ? '0' : '1')}
-            className="-mt-3 group-[.sidebar]:rotate-[180deg] group-[.sidebar]:mx-auto text-btnText bg-btnSimple rounded-[6px] w-[24px] h-[24px] flex items-center justify-center cursor-pointer select-none"
-          >
+          <div className="hidden">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="7"
@@ -142,7 +136,7 @@ export const AgentList: FC<{ onChange: (arr: any[]) => void }> = ({
         </div>
         <div
           className={clsx(
-            'flex flex-col gap-[15px] mobile:flex-row mobile:gap-[12px] mobile:ps-[12px] mobile:pt-[6px]'
+            'flex flex-col gap-[4px] mobile:flex-row mobile:gap-[12px] mobile:pt-[6px]'
           )}
         >
           {sortedIntegrations.map((integration, index) => (
@@ -150,7 +144,7 @@ export const AgentList: FC<{ onChange: (arr: any[]) => void }> = ({
               onClick={setIntegration(integration)}
               key={integration.id}
               className={clsx(
-                'flex gap-[12px] items-center group/profile justify-center hover:bg-boxHover rounded-e-[8px] hover:opacity-100 cursor-pointer mobile:shrink-0',
+                'flex gap-[10px] items-center group/profile justify-center h-[44px] px-[8px] rounded-[12px] hover:bg-white hover:opacity-100 cursor-pointer text-[14px] text-[#111214] mobile:shrink-0',
                 !selected.some((p) => p.id === integration.id) &&
                   !isBrandMark(integration.identifier) &&
                   'opacity-20'
@@ -174,22 +168,19 @@ export const AgentList: FC<{ onChange: (arr: any[]) => void }> = ({
                     <div className="bg-primary/60 w-[39px] h-[46px] start-0 top-0 absolute rounded-full z-[199]" />
                   </div>
                 )}
-                <div className="h-full w-[4px] -ms-[12px] rounded-s-[3px] opacity-0 group-hover/profile:opacity-100 transition-opacity">
-                  <SVGLine />
-                </div>
                 <ImageWithFallback
                   fallbackSrc={`/icons/platforms/${integration.identifier}.png`}
                   src={integration.picture}
                   className={clsx(
-                    'rounded-[8px]',
+                    'rounded-full',
                     isBrandMark(integration.identifier) &&
                       (!selected.some((p) => p.id === integration.id)
                         ? 'opacity-20 group-hover/profile:opacity-100'
                         : integration.disabled && 'opacity-50')
                   )}
                   alt={integration.identifier}
-                  width={36}
-                  height={36}
+                  width={28}
+                  height={28}
                 />
                 {/* a brand mark stays above the reconnect overlay (z-[199]),
                     it hangs a little off the corner to hide less of the
@@ -209,7 +200,7 @@ export const AgentList: FC<{ onChange: (arr: any[]) => void }> = ({
               </div>
               <div
                 className={clsx(
-                  'flex-1 whitespace-nowrap text-ellipsis overflow-hidden group-[.sidebar]:hidden mobile:hidden',
+                  'flex-1 whitespace-nowrap text-ellipsis overflow-hidden mobile:hidden',
                   !selected.some((p) => p.id === integration.id) &&
                     isBrandMark(integration.identifier)
                     ? 'opacity-20 group-hover/profile:opacity-100'
@@ -229,14 +220,41 @@ export const AgentList: FC<{ onChange: (arr: any[]) => void }> = ({
 export const PropertiesContext = createContext({ properties: [] });
 export const Agent: FC<{ children: ReactNode }> = ({ children }) => {
   const [properties, setProperties] = useState([]);
+  const t = useT();
 
   return (
     <PropertiesContext.Provider value={{ properties }}>
-      <AgentList onChange={setProperties} />
-      <div className="bg-newBgColorInner flex flex-1 mobile:order-3 mobile:min-h-[500px]">
-        {children}
+      {/* Paragon Social: "Agente IA" screen of the design */}
+      <div className="flex-1 min-w-0 flex flex-col gap-[24px] px-[32px] pt-[28px] pb-[32px] h-screen mobile:h-auto mobile:px-[16px] mobile:pt-[16px]">
+        <header className="flex flex-wrap items-center justify-between gap-[16px]">
+          <div className="flex flex-col gap-[4px]">
+            <h1 className="m-0 font-heading text-[30px] mobile:text-[24px] font-[700] -tracking-[0.6px] text-[#111214]">
+              {t('paragon_menu_agent', 'AI agent')}
+            </h1>
+            <p className="m-0 text-[14px] text-[#5d616a]">
+              {t(
+                'paragon_agent_subtitle',
+                'Ask it for ideas, copy or to schedule posts for you.'
+              )}
+            </p>
+          </div>
+          <Link
+            href="/agents"
+            className="h-[44px] px-[16px] rounded-[12px] border border-[#dfe1e5] bg-white hover:bg-[#f6f7f8] text-[14px] font-[500] text-[#111214] flex items-center"
+          >
+            + {t('paragon_agent_new', 'New conversation')}
+          </Link>
+        </header>
+        <div className="flex gap-[20px] flex-1 min-h-0 mobile:flex-col">
+          <aside className="w-[260px] shrink-0 flex flex-col gap-[24px] overflow-y-auto mobile:w-full">
+            <Threads />
+            <AgentList onChange={setProperties} />
+          </aside>
+          <section className="agent-card flex flex-1 min-w-0 bg-white border border-[#eceef1] rounded-[20px] overflow-hidden mobile:min-h-[500px]">
+            {children}
+          </section>
+        </div>
       </div>
-      <Threads />
     </PropertiesContext.Provider>
   );
 };
@@ -254,45 +272,19 @@ const Threads: FC = () => {
   const { data } = useSWR('threads', threads);
 
   return (
-    <div
-      className={clsx(
-        'trz bg-newBgColorInner flex flex-col gap-[15px] transition-all relative',
-        'w-[260px] mobile:w-full mobile:order-2'
-      )}
-    >
-      <div className="absolute top-0 start-0 w-full h-full p-[20px] mobile:p-[12px] mobile:static mobile:h-auto mobile:flex mobile:gap-[8px] mobile:items-center overflow-auto scrollbar scrollbar-thumb-fifth scrollbar-track-newBgColor">
-        <div className="mb-[15px] mobile:mb-0 justify-center flex group-[.sidebar]:pb-[15px] mobile:shrink-0">
-          <Link
-            href={`/agents`}
-            className="text-white whitespace-nowrap flex-1 pt-[12px] pb-[14px] ps-[16px] pe-[20px] group-[.sidebar]:p-0 min-h-[44px] max-h-[44px] rounded-md bg-btnPrimary flex justify-center items-center gap-[5px] outline-none"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="21"
-              height="20"
-              viewBox="0 0 21 20"
-              fill="none"
-              className="min-w-[21px] min-h-[20px]"
-            >
-              <path
-                d="M10.5001 4.16699V15.8337M4.66675 10.0003H16.3334"
-                stroke="white"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            <div className="flex-1 text-start text-[16px] group-[.sidebar]:hidden">
-              {t('start_a_new_chat', 'Start a new chat')}
-            </div>
-          </Link>
-        </div>
-        <div className="flex flex-col gap-[1px] mobile:flex-row mobile:gap-[4px]">
+    <div className="flex flex-col gap-[6px] mobile:order-2">
+      <div>
+        <h2 className="m-0 mb-[4px] text-[11px] tracking-[0.08em] uppercase font-[500] text-[#8a8e96] px-[4px]">
+          {t('paragon_agent_threads', 'Conversations')}
+        </h2>
+        <div className="flex flex-col gap-[4px] mobile:flex-row mobile:gap-[4px]">
           {data?.threads?.map((p: any) => (
             <Link
               className={clsx(
-                'overflow-ellipsis overflow-hidden whitespace-nowrap hover:bg-newBgColor px-[10px] py-[6px] rounded-[10px] cursor-pointer mobile:shrink-0 mobile:max-w-[180px] mobile:border mobile:border-newTableBorder',
-                p.id === id && 'bg-newBgColor'
+                'overflow-ellipsis overflow-hidden whitespace-nowrap px-[14px] py-[12px] rounded-[12px] text-[14px] font-[500] text-[#111214] border cursor-pointer mobile:shrink-0 mobile:max-w-[180px]',
+                p.id === id
+                  ? 'bg-white border-[#dfe1e5]'
+                  : 'border-transparent hover:bg-white'
               )}
               href={`/agents/${p.id}`}
               key={p.id}

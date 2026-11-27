@@ -53,7 +53,7 @@ export const LayoutComponent = ({ children }: { children: ReactNode }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   // Paragon Social: screens already rebuilt from the design draw their own header
   const isDesignedPage =
-    ['/launches', '/analytics', '/settings', '/media'].some(
+    ['/launches', '/analytics', '/settings', '/media', '/agents'].some(
       (path) => pathname.indexOf(path) === 0
     );
   useEffect(() => {

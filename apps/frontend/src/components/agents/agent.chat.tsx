@@ -65,16 +65,20 @@ export const AgentChat: FC = () => {
         style={
           {
             '--copilot-kit-primary-color': 'var(--new-btn-text)',
-            '--copilot-kit-background-color': 'var(--new-bg-color)',
+            '--copilot-kit-background-color': '#ffffff',
           } as CopilotKitCSSProperties
         }
-        className="trz agent bg-newBgColorInner flex flex-col gap-[15px] transition-all flex-1 items-center relative"
+        className="trz agent bg-white flex flex-col gap-[15px] transition-all flex-1 items-center relative"
       >
-        <div className="absolute left-0 w-full h-full pb-[20px]">
+        <div className="absolute left-0 w-full h-full">
           <CopilotChat
             className="w-full h-full"
             labels={{
               title: t('your_assistant', 'Your Assistant'),
+              placeholder: t(
+                'paragon_agent_placeholder',
+                'Write an idea or ask for a week of content…'
+              ),
               initial: t('agent_welcome_message', `Hello, I am your Paragon Social agent 🙌🏻.
               
 I can schedule a post or multiple posts to multiple channels and generate pictures and videos.

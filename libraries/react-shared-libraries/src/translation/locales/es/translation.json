@@ -609,7 +609,7 @@
   "select_channels": "Seleccionar canales",
   "start_a_new_chat": "Iniciar un nuevo chat",
   "your_assistant": "Tu Asistente",
-  "agent_welcome_message": "Hola, soy tu agente de Paragon Social 🙌🏻.\n\nPuedo programar una publicación o varias publicaciones en múltiples canales y generar imágenes y videos.\n\nPuedes seleccionar los canales que deseas usar desde el menú de la izquierda.\n\nPuedes ver tus conversaciones anteriores desde el menú de la derecha.\n\nTambién puedes usarme como servidor MCP. Ve a Configuración >> Agentes / Dev.",
+  "agent_welcome_message": "Hola, soy tu agente de Paragon Social 🙌🏻.\n\nPuedo programar una publicación o varias publicaciones en múltiples canales y generar imágenes y videos.\n\nPuedes seleccionar los canales que deseas usar en la columna de la izquierda.\n\nPuedes ver tus conversaciones anteriores en la misma columna.\n\nTambién puedes usarme como servidor MCP. Ve a Ajustes >> Agentes / Dev.",
   "last_github_trending": "Últimas tendencias de Github",
   "next_predicted_github_trending": "Próximas tendencias previstas de GitHub",
   "repository": "Repositorio",
@@ -1006,5 +1006,10 @@
   "paragon_media_formats": "JPG, PNG, GIF o MP4 · hasta 1 GB por carga",
   "paragon_media_video": "Video",
   "paragon_media_image": "Imagen",
-  "paragon_media_subtitle": "Imágenes y videos de tu espacio"
+  "paragon_media_subtitle": "Imágenes y videos de tu espacio",
+  "paragon_agent_channels": "Canales que puede usar",
+  "paragon_agent_subtitle": "Pídele ideas, textos o que programe publicaciones por ti.",
+  "paragon_agent_new": "Nueva conversación",
+  "paragon_agent_threads": "Conversaciones",
+  "paragon_agent_placeholder": "Escribe una idea o pide una semana de contenido…"
 }
