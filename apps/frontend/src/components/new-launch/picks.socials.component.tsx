@@ -9,6 +9,10 @@ import ImageWithFallback from '@gitroom/react/helpers/image.with.fallback';
 import { Check } from '@gitroom/frontend/components/launches/tags.component';
 import { Integrations } from '@gitroom/frontend/components/launches/calendar.context';
 import {
+  networkName,
+  PARAGON_NETWORK_COLORS,
+} from '@gitroom/frontend/components/new-layout/paragon.sidebar';
+import {
   isBrandMark,
   PlatformIcon,
 } from '@gitroom/frontend/components/ui/platform.icon.component';
@@ -134,70 +138,59 @@ export const PicksSocialsComponent: FC<{
     );
   }
 
-  // an unselected channel is grayed out and a locked one faded, as a whole. A
-  // brand mark can't be: only its avatar is (see isBrandMark)
-  const dimChannel = (integration: Integrations) =>
-    clsx(
-      selectedIntegrations.findIndex(
-        (p) => p.integration.id === integration.id
-      ) === -1 && 'grayscale',
-      locked && 'opacity-50'
-    );
-
+  // Paragon Social: channels as the design's pills ("IG Paragon · Instagram")
   return (
-    <div className={clsx('flex', locked && 'pointer-events-none')}>
-      <div className="flex flex-1">
-        <div className="innerComponent flex-1 flex">
-          <div className="flex flex-wrap gap-[12px] flex-1">
-            {availableIntegrations.map((integration) => (
-              <div
-                key={integration.id}
-                className="flex gap-[8px] items-center"
-                {...(toolTip && {
-                  'data-tooltip-id': 'tooltip',
-                  'data-tooltip-content': integration.name,
-                })}
-              >
-                <div
-                  onClick={toggleIntegration(integration)}
-                  className={clsx(
-                    'cursor-pointer border-[2px] relative rounded-full flex justify-center items-center bg-fifth filter transition-all duration-500',
-                    selectedIntegrations.findIndex(
-                      (p) => p.integration.id === integration.id
-                    ) === -1
-                      ? 'border-transparent'
-                      : 'border-[#FA3D4F]',
-                    !isBrandMark(integration.identifier) &&
-                      dimChannel(integration)
-                  )}
-                >
-                  <ImageWithFallback
-                    fallbackSrc="/no-picture.jpg"
-                    src={integration.picture || '/no-picture.jpg'}
-                    className={clsx(
-                      'rounded-full transition-all min-w-[42px] border-[1.5px] min-h-[42px]',
-                      selectedIntegrations.findIndex(
-                        (p) => p.integration.id === integration.id
-                      ) === -1
-                        ? 'border-transparent'
-                        : 'border-[#000]',
-                      isBrandMark(integration.identifier) &&
-                        dimChannel(integration)
-                    )}
-                    alt={integration.identifier}
-                    width={42}
-                    height={42}
-                  />
-                  <PlatformBadge
-                    integration={integration}
-                    inactive={!!dimChannel(integration)}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+    <div
+      className={clsx(
+        'flex flex-wrap gap-[10px] flex-1',
+        locked && 'pointer-events-none'
+      )}
+    >
+      {availableIntegrations.map((integration) => {
+        const selected =
+          selectedIntegrations.findIndex(
+            (p) => p.integration.id === integration.id
+          ) !== -1;
+        return (
+          <button
+            type="button"
+            key={integration.id}
+            onClick={toggleIntegration(integration)}
+            aria-pressed={selected}
+            className={clsx(
+              'flex items-center gap-[10px] h-[44px] ps-[6px] pe-[16px] rounded-full border text-[14px] transition-colors',
+              selected
+                ? 'border-[#111214] bg-white text-[#111214] font-[600] shadow-[inset_0_0_0_1px_#111214]'
+                : 'border-[#eceef1] bg-[#f6f7f8] text-[#5d616a] font-[500] hover:bg-white',
+              locked && 'opacity-50'
+            )}
+          >
+            <span className="relative">
+              <ImageWithFallback
+                fallbackSrc="/no-picture.jpg"
+                src={integration.picture || '/no-picture.jpg'}
+                className={clsx(
+                  'rounded-full w-[30px] h-[30px] min-w-[30px] object-cover transition-all',
+                  !selected && 'grayscale opacity-70'
+                )}
+                alt={integration.identifier}
+                width={30}
+                height={30}
+              />
+              <span
+                className="absolute -bottom-[2px] -end-[2px] w-[10px] h-[10px] rounded-full border-[2px] border-white"
+                style={{
+                  background:
+                    PARAGON_NETWORK_COLORS[integration.identifier] || '#5d616a',
+                }}
+              />
+            </span>
+            <span className="truncate max-w-[220px]">
+              {integration.name} · {networkName(integration.identifier)}
+            </span>
+          </button>
+        );
+      })}
     </div>
   );
 };

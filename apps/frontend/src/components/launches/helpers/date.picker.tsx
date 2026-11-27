@@ -289,7 +289,7 @@ export const DatePicker: FC<{
   });
   return (
     <div
-      className="px-[16px] border border-newTextColor/10 mobile:border-newTextColor/[0.08] rounded-[8px] mobile:rounded-[6px] justify-center flex gap-[8px] items-center relative h-[44px] mobile:h-[34px] text-[15px] mobile:text-[13px] whitespace-nowrap font-[600] ml-[7px] mobile:ml-0 select-none flex-1 mobile:min-w-0"
+      className="px-[16px] border border-[#dfe1e5] bg-white hover:bg-[#f6f7f8] mobile:border-newTextColor/[0.08] rounded-[12px] mobile:rounded-[6px] justify-center flex gap-[8px] items-center relative h-[44px] mobile:h-[34px] text-[14px] mobile:text-[13px] whitespace-nowrap font-[500] text-[#111214] ml-[7px] mobile:ml-0 select-none flex-1 mobile:min-w-0"
       onClick={onOpen || changeShow}
       ref={ref}
     >

@@ -102,8 +102,8 @@ export const SelectChannels: FC<{
         data-tooltip-content={t('select_channels_tooltip', 'Select Channels')}
         onClick={openClose}
         className={clsx(
-          'relative z-[20] cursor-pointer h-[42px] rounded-[8px] px-[12px] border flex items-center',
-          open || !allSelected ? 'border-[#FA3D4F]' : 'border-newColColor'
+          'relative z-[20] cursor-pointer h-[44px] w-[44px] rounded-[12px] border bg-white flex items-center justify-center text-[#111214] hover:bg-[#f6f7f8] [&_svg]:w-[18px] [&_svg]:h-[18px]',
+          open || !allSelected ? 'border-[#f93b4f] text-[#f93b4f]' : 'border-[#dfe1e5]'
         )}
       >
         <FilterIcon />
@@ -111,9 +111,9 @@ export const SelectChannels: FC<{
       {open && (
         <div
           style={pos}
-          className="flex flex-col fixed py-[12px] bg-newBgColorInner menu-shadow min-w-[250px] max-h-[320px] overflow-y-auto"
+          className="flex flex-col fixed p-[6px] bg-white border border-[#eceef1] rounded-[14px] shadow-[0_12px_32px_rgba(17,18,20,.12)] min-w-[250px] max-h-[320px] overflow-y-auto"
         >
-          <div className="p-[12px] hover:bg-newBgColor text-[14px] font-[600] flex items-center">
+          <div className="px-[10px] py-[10px] rounded-[10px] hover:bg-[#f6f7f8] text-[14px] font-[600] flex items-center">
             <Checkbox
               disableForm={true}
               checked={allSelected}
@@ -124,7 +124,7 @@ export const SelectChannels: FC<{
           {channels.map((p) => (
             <div
               key={p.id}
-              className="p-[12px] hover:bg-newBgColor text-[14px] font-[500] flex items-center gap-[10px]"
+              className="px-[10px] py-[10px] rounded-[10px] hover:bg-[#f6f7f8] text-[14px] font-[500] flex items-center gap-[10px]"
             >
               <Checkbox
                 disableForm={true}

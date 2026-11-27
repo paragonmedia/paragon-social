@@ -7,15 +7,8 @@ import {
   ParagonSpaceSelector,
 } from '@gitroom/frontend/components/new-layout/paragon.sidebar';
 import { jakartaSans } from '@gitroom/frontend/fonts/plus-jakarta-sans/plus.jakarta.sans.font';
-const ModeComponent = dynamic(
-  () => import('@gitroom/frontend/components/layout/mode.component'),
-  {
-    ssr: false,
-  }
-);
 
 import clsx from 'clsx';
-import dynamic from 'next/dynamic';
 import { useFetch } from '@gitroom/helpers/utils/custom.fetch';
 import { useVariables } from '@gitroom/react/helpers/variable.context';
 import { usePathname, useSearchParams } from 'next/navigation';
@@ -40,7 +33,6 @@ import { TopMenu } from '@gitroom/frontend/components/layout/top.menu';
 import { LanguageComponent } from '@gitroom/frontend/components/layout/language.component';
 import { ChromeExtensionComponent } from '@gitroom/frontend/components/layout/chrome.extension.component';
 import NotificationComponent from '@gitroom/frontend/components/notifications/notification.component';
-import { OrganizationSelector } from '@gitroom/frontend/components/layout/organization.selector';
 import { InvoicesComponent } from '@gitroom/frontend/components/layout/invoices.component';
 import { StreakComponent } from '@gitroom/frontend/components/layout/streak.component';
 import { PreConditionComponent } from '@gitroom/frontend/components/layout/pre-condition.component';
@@ -141,7 +133,7 @@ export const LayoutComponent = ({ children }: { children: ReactNode }) => {
                           user?.admin && 'pt-[52px]'
                         )}
                       >
-                        <div className="px-[8px] text-white">
+                        <div className="px-[8px] text-white [&>svg]:h-[24px] [&>svg]:w-auto">
                           <LogoTextComponent />
                         </div>
                         <ParagonSpaceSelector />
@@ -172,11 +164,7 @@ export const LayoutComponent = ({ children }: { children: ReactNode }) => {
                           className="flex items-center gap-[16px] px-[8px] text-[#9a9ea6] [&_svg]:max-w-[20px]"
                           onClick={(e) => e.stopPropagation()}
                         >
-                          <OrganizationSelector />
                           <LanguageComponent />
-                          <div className="hover:text-white">
-                            <ModeComponent />
-                          </div>
                           <NotificationComponent />
                         </div>
                       </div>

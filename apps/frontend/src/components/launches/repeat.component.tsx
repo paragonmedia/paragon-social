@@ -113,8 +113,8 @@ export const RepeatComponent: FC<{
     <div
       ref={ref}
       className={clsx(
-        'border rounded-[8px] justify-center flex items-center relative h-[44px] text-[15px] font-[600] select-none',
-        isOpen ? 'border-[#FA3D4F]' : 'border-newTextColor/10',
+        'border border-[#dfe1e5] bg-white hover:bg-[#f6f7f8] rounded-[12px] justify-center flex items-center relative h-[44px] text-[14px] font-[500] text-[#111214] select-none',
+        isOpen ? 'border-[#111214]' : 'border-[#dfe1e5]',
       )}
     >
       <div

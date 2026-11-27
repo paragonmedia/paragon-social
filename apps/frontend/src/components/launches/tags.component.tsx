@@ -257,7 +257,7 @@ export const TagsComponentInner: FC<{
         ))}
         <div
           onClick={addTag}
-          className="cursor-pointer gap-[8px] flex w-full h-[44px] rounded-[8px] px-[16px] justify-center items-center bg-[#D82D7E] text-white select-none"
+          className="cursor-pointer gap-[8px] flex w-full h-[44px] rounded-[12px] px-[16px] justify-center items-center bg-[#111214] text-white select-none"
         >
           <PlusIcon size={20} />
           <div className="text-[15px] font-[600]">
@@ -272,8 +272,8 @@ export const TagsComponentInner: FC<{
     <div
       ref={ref}
       className={clsx(
-        'border rounded-[8px] justify-center flex items-center relative h-[44px] text-[15px] font-[600] select-none',
-        isOpen ? 'border-[#FA3D4F]' : 'border-newTextColor/10'
+        'border border-[#dfe1e5] bg-white hover:bg-[#f6f7f8] rounded-[12px] justify-center flex items-center relative h-[44px] text-[14px] font-[500] text-[#111214] select-none',
+        isOpen ? 'border-[#111214]' : 'border-[#dfe1e5]'
       )}
     >
       <div

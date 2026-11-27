@@ -987,5 +987,9 @@
   "paragon_analytics_best": "Mejor",
   "paragon_analytics_less": "Menos",
   "paragon_analytics_more": "Más",
-  "paragon_analytics_no_posts": "Sin publicaciones"
+  "paragon_analytics_no_posts": "Sin publicaciones",
+  "paragon_menu_create": "Crear",
+  "paragon_menu_library": "Biblioteca",
+  "paragon_menu_agent": "Agente IA",
+  "paragon_menu_settings": "Ajustes"
 }

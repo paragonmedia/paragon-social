@@ -134,10 +134,10 @@ export const ParagonSidebarChannels: FC = () => {
             <img
               src={integration.picture}
               alt=""
-              className="w-[24px] h-[24px] min-w-[24px] rounded-[7px] object-cover"
+              className="w-[28px] h-[28px] min-w-[28px] rounded-full object-cover"
             />
           ) : (
-            <span className="w-[24px] h-[24px] min-w-[24px] rounded-[7px] bg-[#23262b] flex items-center justify-center text-[10px] font-[600]">
+            <span className="w-[28px] h-[28px] min-w-[28px] rounded-full bg-[#2a2d33] flex items-center justify-center text-[11px] font-[600] text-white">
               {initials(integration.name)}
             </span>
           )}
@@ -149,7 +149,7 @@ export const ParagonSidebarChannels: FC = () => {
       ))}
       <Link
         href="/launches?channels=open"
-        className="mt-[2px] h-[36px] rounded-[10px] border border-dashed border-[#2f3238] text-[#c6c9cf] hover:text-white hover:border-[#4a4e56] flex items-center justify-center text-[13px]"
+        className="mt-[4px] h-[44px] rounded-[10px] border border-dashed border-[#3a3d44] text-[#c6c9cf] hover:text-white hover:border-[#5a5e66] flex items-center justify-center text-[13px]"
       >
         + {t('paragon_connect_channel', 'Connect channel')}
       </Link>

@@ -1,6 +1,7 @@
 'use client';
 
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useRef } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import clsx from 'clsx';
 import { useCalendar } from '@gitroom/frontend/components/launches/calendar.context';
 import { getDateRange } from '@gitroom/frontend/components/launches/filters';
@@ -32,6 +33,23 @@ export const ParagonCalendarHeader: FC = () => {
   const t = useT();
   const createPost = useCreatePost();
   const display = calendar.display as Display;
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const opened = useRef(false);
+
+  // "Crear" in the sidebar links to /launches?create=1
+  useEffect(() => {
+    if (
+      searchParams.get('create') !== '1' ||
+      opened.current ||
+      !calendar.integrations.length
+    ) {
+      return;
+    }
+    opened.current = true;
+    router.replace('/launches');
+    createPost();
+  }, [searchParams, calendar.integrations, createPost]);
 
   const setRange = useCallback(
     (view: Display, reference?: string) => {

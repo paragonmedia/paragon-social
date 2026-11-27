@@ -459,7 +459,7 @@ export const EditorWrapper: FC<{
         'relative flex-col gap-[20px] flex-1 min-w-0 mobile:flex mobile:gap-0 mobile:pb-[64px]',
         (items.length === 1 || !canEdit || !comments) && 'flex',
         ((!canEdit && !isCreateSet) || !comments) &&
-          'bg-newSettings mobile:bg-transparent rounded-[12px]'
+          'bg-white border border-[#eceef1] mobile:border-0 mobile:bg-transparent rounded-[16px]'
       )}
     >
       {isCreateSet && current !== 'global' && (
@@ -503,7 +503,7 @@ export const EditorWrapper: FC<{
               )}
             </div>
             <div>
-              <div className="text-white rounded-[8px] h-[44px] px-[20px] bg-[#D82D7E] cursor-pointer flex justify-center items-center">
+              <div className="text-white rounded-[12px] h-[44px] px-[20px] bg-[#111214] cursor-pointer flex justify-center items-center">
                 {t('edit_content', 'Edit content')}
               </div>
             </div>
@@ -515,10 +515,10 @@ export const EditorWrapper: FC<{
         <div
           key={g.id}
           className={clsx(
-            'relative flex flex-col gap-[20px] flex-1 bg-newSettings mobile:bg-transparent',
+            'relative flex flex-col gap-[20px] flex-1 bg-white border border-[#eceef1] mobile:border-0 mobile:bg-transparent',
             index !== last && 'mobile:flex-none',
-            index === 0 && 'rounded-t-[12px]',
-            (index === items.length - 1 || !comments) && 'rounded-b-[12px]',
+            index === 0 && 'rounded-t-[16px]',
+            (index === items.length - 1 || !comments) && 'rounded-b-[16px]',
             !canEdit && !isCreateSet && 'blur-s',
             ((!canEdit && index > 0) || (!comments && index > 0)) && 'hidden'
           )}
@@ -935,7 +935,7 @@ export const Editor: FC<{
         )}
         id={id}
       >
-        <div className="relative cursor-text flex flex-1 flex-col">
+        <div className="relative cursor-text flex flex-1 flex-col border border-[#dfe1e5] rounded-[12px] mobile:border-0 focus-within:border-[#111214] transition-colors">
           <div {...getRootProps()} className="flex flex-1 flex-col">
             <div
               className={clsx(
@@ -948,7 +948,7 @@ export const Editor: FC<{
             <div
               onFocus={onActive}
               className={clsx(
-                'px-[10px] pt-[10px] bg-newBgColorInner rounded-t-[6px] relative z-[99]',
+                'px-[14px] pt-[12px] bg-newBgColorInner rounded-t-[12px] relative z-[99] text-[15px] leading-[1.55]',
                 flat && 'mobile:px-0 mobile:pt-0',
                 flat && !active && 'mobile:text-textItemBlur',
                 // room for the delay and delete icons of a comment
@@ -1006,7 +1006,7 @@ export const Editor: FC<{
               }}
             />
             <div className={clsx('flex flex-col', flat && 'mobile:pt-[16px]')}>
-              <div className="flex bg-newBgColorInner rounded-b-[6px] cursor-default">
+              <div className="flex bg-newBgColorInner rounded-b-[12px] px-[6px] cursor-default">
                 {setImages && (
                   <MultiMediaComponent
                     mediaNotAvailable={num > 0 && comments === 'no-media'}
@@ -1070,7 +1070,7 @@ export const Editor: FC<{
                             'insert_emoji',
                             'Insert Emoji'
                           )}
-                          className="select-none cursor-pointer rounded-[6px] mobile:rounded-[8px] w-[30px] h-[30px] mobile:w-[40px] mobile:h-[40px] bg-newColColor mobile:bg-newSettings flex justify-center items-center"
+                          className="select-none cursor-pointer rounded-[8px] w-[32px] h-[32px] mobile:w-[40px] mobile:h-[40px] bg-white border border-[#dfe1e5] hover:bg-[#f6f7f8] mobile:bg-newSettings mobile:border-0 flex justify-center items-center"
                           onClick={() => setEmojiPickerOpen(!emojiPickerOpen)}
                         >
                           <EmojiIcon className="mobile:w-[20px] mobile:h-[20px]" />

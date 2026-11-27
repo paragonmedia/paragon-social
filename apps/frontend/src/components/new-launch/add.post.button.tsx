@@ -16,7 +16,7 @@ export const AddPostButton: FC<{
     <div className="flex">
       <div
         onClick={onClick}
-        className="select-none cursor-pointer h-[34px] rounded-[6px] flex bg-[#D82D7E] gap-[8px] justify-center items-center pl-[16px] pr-[20px] text-[13px] font-[600] mt-[12px] mobile:w-[40px] mobile:h-[40px] mobile:p-0 mobile:mt-0 mobile:rounded-[8px]"
+        className="select-none cursor-pointer h-[36px] rounded-[10px] flex bg-white border border-[#dfe1e5] hover:bg-[#f6f7f8] text-[#111214] gap-[8px] justify-center items-center pl-[14px] pr-[16px] text-[13px] font-[600] mt-[12px] self-start mobile:w-[40px] mobile:h-[40px] mobile:p-0 mobile:mt-0 mobile:rounded-[8px]"
       >
         <div>
           <svg
@@ -28,14 +28,14 @@ export const AddPostButton: FC<{
           >
             <path
               d="M8.00065 3.33301V12.6663M3.33398 7.99967H12.6673"
-              stroke="white"
+              stroke="currentColor"
               strokeWidth="1.5"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
           </svg>
         </div>
-        <div className="!text-white mobile:hidden">
+        <div className="mobile:hidden">
           {t(
             ...(props.postComment === PostComment.ALL
               ? ['add_comment_or_post', 'Add comment or post']

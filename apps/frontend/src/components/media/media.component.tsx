@@ -963,26 +963,26 @@ export const MultiMediaComponent: FC<{
               <div className="flex py-[10px] mobile:py-0 mobile:shrink-0 b2 items-center gap-[4px]">
                 <div
                   onClick={showModal}
-                  className="cursor-pointer h-[30px] mobile:h-[40px] mobile:min-w-[40px] rounded-[6px] mobile:rounded-[8px] justify-center items-center flex bg-newColColor mobile:bg-newSettings px-[8px]"
+                  className="cursor-pointer h-[32px] mobile:h-[40px] mobile:min-w-[40px] rounded-[8px] justify-center items-center flex bg-white border border-[#dfe1e5] hover:bg-[#f6f7f8] mobile:bg-newSettings mobile:border-0 px-[10px]"
                 >
                   <div className="flex gap-[8px] items-center">
                     <div>
                       <InsertMediaIcon className="mobile:w-[20px] mobile:h-[20px]" />
                     </div>
-                    <div className="text-[10px] font-[600] maxMedia:hidden block">
+                    <div className="text-[12px] font-[500] maxMedia:hidden block">
                       {t('insert_media', 'Insert Media')}
                     </div>
                   </div>
                 </div>
                 <div
                   onClick={designMedia}
-                  className="cursor-pointer h-[30px] rounded-[6px] justify-center items-center flex bg-newColColor px-[8px] mobile:hidden"
+                  className="cursor-pointer h-[32px] rounded-[8px] justify-center items-center flex bg-white border border-[#dfe1e5] hover:bg-[#f6f7f8] px-[10px] mobile:hidden"
                 >
                   <div className="flex gap-[5px] items-center">
                     <div>
                       <DesignMediaIcon />
                     </div>
-                    <div className="text-[10px] font-[600] iconBreak:hidden block">
+                    <div className="text-[12px] font-[500] iconBreak:hidden block">
                       {t('design_media', 'Design Media')}
                     </div>
                   </div>

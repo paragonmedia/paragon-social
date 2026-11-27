@@ -5,7 +5,9 @@ import React, {
   Fragment,
   memo,
   useCallback,
+  useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import {
@@ -95,7 +97,7 @@ const convertTimeFormatBasedOnLocality = (time: number) => {
   if (isUSCitizen()) {
     return `${time === 12 ? 12 : time % 12}:00 ${time >= 12 ? 'PM' : 'AM'}`;
   } else {
-    return `${time}:00`;
+    return `${String(time).padStart(2, '0')}:00`;
   }
 };
 
@@ -552,10 +554,22 @@ export const WeekView = () => {
 
   // Paragon Social: week grid from the design (64px hours + 7 days, 104px rows)
   const today = newDayjs().format('L');
+  const scroller = useRef<HTMLDivElement>(null);
+  // open the day at 8:00, like the design, instead of midnight
+  useEffect(() => {
+    const box = scroller.current;
+    const row = box?.querySelector<HTMLElement>('[data-hour="8"]');
+    if (box && row) {
+      box.scrollTop = row.offsetTop - 72;
+    }
+  }, [startDate]);
   return (
     <div className="flex flex-col text-[#111214] flex-1">
       <div className="flex-1 relative">
-        <div className="absolute inset-0 overflow-auto scrollbar scrollbar-thumb-fifth scrollbar-track-newBgColor">
+        <div
+          ref={scroller}
+          className="absolute inset-0 overflow-auto scrollbar scrollbar-thumb-fifth scrollbar-track-newBgColor"
+        >
           <div className="grid [grid-template-columns:64px_repeat(7,_minmax(120px,_1fr))] min-w-[940px] relative">
             <div className="sticky top-0 z-[20] bg-white border-b border-[#eceef1]" />
             {localizedDays.map((day) => {
@@ -569,11 +583,11 @@ export const WeekView = () => {
                   )}
                 >
                   <span className="text-[12px] text-[#5d616a] uppercase tracking-[0.06em]">
-                    {day.date.format('ddd')}
+                    {day.date.format('ddd').replace('.', '')}
                   </span>
                   <span
                     className={clsx(
-                      'font-heading font-[600] text-[20px] leading-none',
+                      'font-heading font-[600] text-[20px] leading-[1.2]',
                       isToday ? 'text-[#d42a3e]' : 'text-[#111214]'
                     )}
                   >
@@ -584,7 +598,10 @@ export const WeekView = () => {
             })}
             {hours.map((hour) => (
               <Fragment key={hour}>
-                <div className="px-[8px] py-[10px] text-[12px] text-[#8a8e96] border-e border-b border-[#f1f2f4] min-h-[104px] whitespace-nowrap">
+                <div
+                  data-hour={hour}
+                  className="px-[8px] py-[10px] text-[12px] text-[#8a8e96] border-e border-b border-[#f1f2f4] min-h-[104px] whitespace-nowrap"
+                >
                   {convertTimeFormatBasedOnLocality(hour)}
                 </div>
                 {localizedDays.map((day) => (
