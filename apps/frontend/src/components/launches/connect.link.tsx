@@ -31,12 +31,11 @@ const useConnectLink = (token: string) => {
   });
 };
 
+// Paragon Social: light page of the "Link de conexión" design
 const Wrapper: FC<{ children: ReactNode }> = ({ children }) => (
-  <div className="flex flex-1 items-center justify-center text-white relative overflow-hidden">
-    {/* Background gradient decoration */}
-    <div className="absolute inset-0 opacity-30">
-      <div className="absolute top-[20%] left-[10%] w-[300px] h-[300px] bg-[#FA3D4F] rounded-full blur-[120px]" />
-      <div className="absolute bottom-[20%] right-[10%] w-[250px] h-[250px] bg-[#FA3D4F] rounded-full blur-[120px]" />
+  <div className="flex flex-1 flex-col items-center justify-center gap-[28px] bg-[#f6f7f8] text-[#111214] px-[24px] py-[40px]">
+    <div className="text-[#111214] [&>svg]:h-[24px] [&>svg]:w-auto">
+      <LogoTextComponent />
     </div>
     {children}
   </div>
@@ -48,11 +47,11 @@ const Row: FC<{ icon: ReactNode; children: ReactNode }> = ({
 }) => (
   <div className="flex gap-[12px] items-start">
     <svg
-      className="w-[20px] h-[20px] shrink-0 mt-[1px] text-[#FA3D4F]"
+      className="w-[18px] h-[18px] shrink-0 mt-[1px] text-[#1d7a46]"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.5"
+      strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
     >
@@ -99,7 +98,7 @@ export const ConnectLink: FC<{ token: string }> = ({ token }) => {
     return (
       <Wrapper>
         <div className="relative z-10 flex justify-center">
-          <div className="w-[48px] h-[48px] border-[3px] border-[#FA3D4F] border-t-transparent rounded-full animate-spin" />
+          <div className="w-[40px] h-[40px] border-[3px] border-[#f93b4f] border-t-transparent rounded-full animate-spin" />
         </div>
       </Wrapper>
     );
@@ -108,10 +107,10 @@ export const ConnectLink: FC<{ token: string }> = ({ token }) => {
   if (error || !data) {
     return (
       <Wrapper>
-        <div className="relative z-10 text-center px-[20px]">
-          <div className="w-[80px] h-[80px] mx-auto mb-[24px] rounded-full bg-red-500/20 flex items-center justify-center">
+        <div className="w-full max-w-[520px] bg-white border border-[#eceef1] rounded-[24px] p-[32px] text-center">
+          <div className="w-[56px] h-[56px] mx-auto mb-[20px] rounded-full bg-[#fdecee] flex items-center justify-center">
             <svg
-              className="w-[40px] h-[40px] text-red-500"
+              className="w-[24px] h-[24px] text-[#d42a3e]"
               fill="currentColor"
               viewBox="0 0 20 20"
             >
@@ -122,10 +121,10 @@ export const ConnectLink: FC<{ token: string }> = ({ token }) => {
               />
             </svg>
           </div>
-          <div className="text-[28px] font-semibold mb-[12px]">
+          <div className="font-heading text-[24px] font-[700] mb-[10px]">
             {t('connect_link_expired', 'This link is no longer valid')}
           </div>
-          <div className="text-[16px] text-[#9C9C9C] max-w-[400px]">
+          <div className="text-[15px] text-[#5d616a] leading-[1.55]">
             {t(
               'connect_link_expired_description',
               'Connection links work for one hour. Ask whoever sent it to you for a new one.'
@@ -145,154 +144,113 @@ export const ConnectLink: FC<{ token: string }> = ({ token }) => {
 
   return (
     <Wrapper>
-      <div className="relative z-10 w-full max-w-[500px] mx-auto px-[20px] py-[40px]">
-        <div className="bg-[#1A1919] rounded-[16px] overflow-hidden flex flex-col">
-          <div className="relative h-[140px] bg-[#141313] overflow-hidden flex items-center justify-center gap-[14px]">
-            <div className="absolute -top-[70px] left-[5%] w-[260px] h-[200px] bg-[#FA3D4F] rounded-full blur-[60px] opacity-80" />
-            <div className="absolute -bottom-[90px] right-0 w-[240px] h-[200px] bg-[#FA3D4F] rounded-full blur-[70px] opacity-60" />
-            <div className="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.22)_1px,transparent_1px)] bg-[length:7px_7px]" />
-            <div className="relative w-[72px] h-[72px] rounded-[18px] bg-[#0B0A0A] border-[2px] border-white/20 shadow-[0_8px_24px_rgba(0,0,0,0.45)] flex items-center justify-center">
-              <img
-                src="/postiz.svg"
-                alt="Paragon Social"
-                className="w-[40px] h-[44px]"
-              />
-            </div>
-            <div className="relative w-[36px] h-[36px] rounded-[10px] bg-[#1A1919] border border-[#2A2929] flex items-center justify-center">
-              <svg
-                className="w-[18px] h-[18px]"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M9 17H7a5 5 0 010-10h2" />
-                <path d="M15 7h2a5 5 0 010 10h-2" />
-                <path d="M8 12h8" />
-              </svg>
-            </div>
-            <div className="relative w-[72px] h-[72px] rounded-[18px] bg-[#0B0A0A] border-[2px] border-white/20 shadow-[0_8px_24px_rgba(0,0,0,0.45)] flex items-center justify-center">
-              <PlatformIcon
-                identifier={data.identifier}
-                size={44}
-                iconClassName="w-[44px] h-[44px] rounded-[10px]"
-                channel=""
-              />
-            </div>
-          </div>
-
-          <div className="p-[32px] flex flex-col gap-[24px]">
-            <h1 className="text-[24px] leading-[32px] font-semibold text-center">
+      <section className="w-full max-w-[520px] bg-white border border-[#eceef1] rounded-[24px] p-[32px] mobile:p-[24px] flex flex-col gap-[20px]">
+        <div className="flex items-center gap-[12px]">
+          <span className="w-[48px] h-[48px] rounded-[14px] bg-[#f6f7f8] border border-[#eceef1] flex items-center justify-center">
+            <PlatformIcon
+              identifier={data.identifier}
+              size={30}
+              iconClassName="w-[30px] h-[30px] rounded-[8px]"
+              channel=""
+            />
+          </span>
+          <svg width="28" height="12" viewBox="0 0 28 12" aria-hidden="true">
+            <path d="M0 6h26M21 1l5 5-5 5" fill="none" stroke="#c6c9cf" strokeWidth="2" />
+          </svg>
+          <span className="w-[48px] h-[48px] rounded-[14px] bg-[#111214] flex items-center justify-center">
+            <svg width="22" height="18" viewBox="0 0 22 18" aria-hidden="true">
+              <path d="M11 0 22 9l-4.5 4.5L11 7l-6.5 6.5L0 9z" fill="#f93b4f" />
+            </svg>
+          </span>
+        </div>
+        <div>
+          <h1 className="m-0 font-heading text-[28px] mobile:text-[24px] font-[700] -tracking-[0.5px] leading-[1.15]">
+            {t(
+              'paragon_connect_link_heading',
+              'Connect your {{platform}} with Paragon',
+              values
+            )}
+          </h1>
+          <p className="mt-[10px] mb-0 text-[15px] text-[#5d616a] leading-[1.55]">
+            {t(
+              'paragon_connect_link_intro',
+              'Paragon Media asked you for access to schedule and publish the content you approve. You do not share your password: you sign in directly on {{platform}}.',
+              values
+            )}
+          </p>
+        </div>
+        <ul className="m-0 p-0 list-none flex flex-col gap-[10px] text-[14px] text-[#3d4148]">
+          <li>
+            <Row icon={<path d="M20 6 9 17l-5-5" />}>
               {t(
-                'connect_link_title',
-                'Paragon Social wants to connect to your {{platform}}',
-                values
+                'paragon_connect_link_point_1',
+                'Only scheduling and publishing posts, and reading their results'
               )}
-            </h1>
-
-            <div className="border border-[#2A2929] rounded-[12px] p-[16px] flex flex-col gap-[14px] text-[14px]">
-              <Row
-                icon={
-                  <path d="M12 3l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V6l7-3z" />
-                }
-              >
+            </Row>
+          </li>
+          <li>
+            <Row icon={<path d="M20 6 9 17l-5-5" />}>
+              {t(
+                'paragon_connect_link_point_2',
+                'Your messages and your password stay private'
+              )}
+            </Row>
+          </li>
+          <li>
+            <Row icon={<path d="M20 6 9 17l-5-5" />}>
+              {t(
+                'paragon_connect_link_point_3',
+                'Only continue if you trust whoever sent you this link'
+              )}
+            </Row>
+          </li>
+          {!!data.redirectTo && (
+            <li>
+              <Row icon={<path d="M20 6 9 17l-5-5" />}>
                 {t(
-                  'connect_link_trust',
-                  'Only continue if you trust whoever sent you this link'
-                )}
-              </Row>
-              <Row
-                icon={<path d="M13 3L5 13.5h6L10 21l8-10.5h-6L13 3z" />}
-              >
-                {t(
-                  'connect_link_automate',
-                  'Paragon Social will automate your {{platform}} account: it can schedule and publish posts on your behalf',
+                  'connect_link_redirect',
+                  'When you are done you will be sent to {{site}}, a website outside of Paragon Social',
                   values
                 )}
               </Row>
-              <Row
-                icon={
-                  <>
-                    <rect x="4" y="4" width="16" height="6" rx="1.5" />
-                    <rect x="4" y="14" width="16" height="6" rx="1.5" />
-                    <path d="M8 7h.01M8 17h.01" />
-                  </>
-                }
-              >
-                {t(
-                  'connect_link_system',
-                  'Everything goes through the Paragon Social system: your account is added to a Paragon Social workspace and managed from there'
-                )}
-              </Row>
-              {!!data.redirectTo && (
-                <Row
-                  icon={
-                    <>
-                      <path d="M14 5h5v5" />
-                      <path d="M19 5l-8 8" />
-                      <path d="M11 6H6a1 1 0 00-1 1v11a1 1 0 001 1h11a1 1 0 001-1v-5" />
-                    </>
-                  }
-                >
-                  {t(
-                    'connect_link_redirect',
-                    'When you are done you will be sent to {{site}}, a website outside of Paragon Social',
-                    values
-                  )}
-                </Row>
+            </li>
+          )}
+        </ul>
+        <button
+          onClick={connect}
+          disabled={submitting}
+          className="h-[50px] rounded-[12px] bg-[#111214] hover:bg-[#2a2c31] disabled:opacity-50 text-white text-[15px] font-[600] transition-colors"
+        >
+          {submitting
+            ? t('connect_link_connecting', 'Connecting...')
+            : t('connect_link_continue', 'Continue to {{platform}}', values)}
+        </button>
+        {failed && (
+          <div className="text-[14px] text-[#d42a3e] text-center">
+            {failedMessage ||
+              t(
+                'could_not_connect_to_platform',
+                'Could not connect to the platform'
               )}
-            </div>
-
-            <div className="text-[12px] uppercase tracking-[0.5px] text-[#9C9C9C] text-center">
-              {t(
-                'connect_link_next',
-                'You will be taken to {{platform}} to sign in and approve the access',
-                values
-              )}
-            </div>
-
-            <div className="flex flex-col gap-[12px]">
-              <button
-                onClick={connect}
-                disabled={submitting}
-                className="bg-[#FA3D4F] hover:bg-[#FA3D4F] disabled:opacity-50 text-white rounded-[8px] py-[12px] px-[16px] text-[14px] font-semibold transition-colors"
-              >
-                {submitting
-                  ? t('connect_link_connecting', 'Connecting...')
-                  : t(
-                      'connect_link_continue',
-                      'Continue to {{platform}}',
-                      values
-                    )}
-              </button>
-              {failed && (
-                <div className="text-[14px] text-red-500 text-center">
-                  {failedMessage ||
-                    t(
-                      'could_not_connect_to_platform',
-                      'Could not connect to the platform'
-                    )}
-                </div>
-              )}
-              <div className="text-[12px] text-[#9C9C9C] text-center">
-                {t(
-                  'connect_link_close',
-                  'Not what you expected? Close this page and nothing will be connected.'
-                )}
-              </div>
-            </div>
           </div>
-        </div>
-
-        <div className="mt-[20px] flex items-center justify-center gap-[8px] text-[14px] text-[#9C9C9C]">
-          {t('connect_link_secured_by', 'Secured by')}
-          <span className="text-white flex">
-            <LogoTextComponent />
-          </span>
-        </div>
-      </div>
+        )}
+        <p className="m-0 text-[12.5px] text-[#6b6f78] leading-[1.5]">
+          {t(
+            'paragon_connect_link_revoke',
+            'You can remove the access whenever you want from your {{platform}} settings. More information in our',
+            values
+          )}{' '}
+          <a
+            href="https://weareparagonmedia.com/privacy"
+            target="_blank"
+            rel="noreferrer"
+            className="text-[#d42a3e] hover:underline"
+          >
+            {t('paragon_privacy_policy', 'privacy policy')}
+          </a>
+          .
+        </p>
+      </section>
     </Wrapper>
   );
 };

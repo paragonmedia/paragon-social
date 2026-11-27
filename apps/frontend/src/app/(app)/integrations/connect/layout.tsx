@@ -13,7 +13,7 @@ export default async function ConnectLinkLayout({
   // w-full: the page can be taller than a small window, and w-screen then adds
   // a horizontal scrollbar next to the vertical one
   return (
-    <div className="bg-[#0B0A0A] flex flex-1 min-h-screen w-full">
+    <div className="bg-[#f6f7f8] flex flex-1 min-h-screen w-full">
       {children}
     </div>
   );

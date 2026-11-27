@@ -1096,5 +1096,21 @@
   "paragon_connect_hint": "You will sign in to the network and choose which accounts to authorize.",
   "paragon_connect_space": "It connects to the space",
   "paragon_connect_client_hint": "Is it a client account? Send them a link so they connect it themselves.",
-  "paragon_connect_client_link": "Copy link for client"
+  "paragon_connect_client_link": "Copy link for client",
+  "paragon_connect_link_heading": "Connect your {{platform}} with Paragon",
+  "paragon_connect_link_intro": "Paragon Media asked you for access to schedule and publish the content you approve. You do not share your password: you sign in directly on {{platform}}.",
+  "paragon_connect_link_point_1": "Only scheduling and publishing posts, and reading their results",
+  "paragon_connect_link_point_2": "Your messages and your password stay private",
+  "paragon_connect_link_point_3": "Only continue if you trust whoever sent you this link",
+  "paragon_connect_link_revoke": "You can remove the access whenever you want from your {{platform}} settings. More information in our",
+  "paragon_privacy_policy": "privacy policy",
+  "paragon_approved": "Approved",
+  "paragon_approve": "Approve",
+  "paragon_changes_prefix": "Changes:",
+  "paragon_request_changes": "Request changes",
+  "paragon_status_approved": "Approved",
+  "paragon_status_pending": "Pending approval",
+  "paragon_review_for": "View for",
+  "paragon_review_title": "Review this post",
+  "paragon_review_scheduled": "Scheduled for"
 }

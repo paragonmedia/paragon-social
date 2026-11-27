@@ -123,7 +123,8 @@ const ReviewerNameForm: FC<{ onConfirm: (name: string) => void }> = ({
 const CommentComposer: FC<{
   parentId?: string;
   onDone?: () => void;
-}> = ({ parentId, onDone }) => {
+  withApproval?: boolean;
+}> = ({ parentId, onDone, withApproval }) => {
   const t = useT();
   const user = useUser();
   const fetch = useFetch();
@@ -253,6 +254,36 @@ const CommentComposer: FC<{
               aria-label={t('cancel', 'Cancel')}
             >
               ✕
+            </button>
+          </div>
+        )}
+        {/* Paragon Social: the client approves or asks for changes */}
+        {withApproval && !parentId && (
+          <div className="flex flex-wrap gap-[10px] mb-[6px]">
+            <button
+              type="button"
+              disabled={loading}
+              onClick={() =>
+                submit({
+                  content: `✅ ${t('paragon_approved', 'Approved')}`,
+                })
+              }
+              className="flex-1 h-[48px] rounded-[12px] bg-[#111214] hover:bg-[#2a2c31] disabled:opacity-50 text-white text-[15px] font-[600]"
+            >
+              {t('paragon_approve', 'Approve')}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                form.setValue(
+                  'content',
+                  `✏️ ${t('paragon_changes_prefix', 'Changes:')} `
+                );
+                form.setFocus('content');
+              }}
+              className="flex-1 h-[48px] rounded-[12px] border border-[#dfe1e5] bg-white hover:bg-[#f6f7f8] text-[#111214] text-[15px] font-[600]"
+            >
+              {t('paragon_request_changes', 'Request changes')}
             </button>
           </div>
         )}
@@ -470,6 +501,9 @@ export const CommentsComponents: FC<{ previewId: string }> = () => {
   const user = useUser();
   const { comments, isLoading, postIds, organizationId } = usePreviewComments();
   const canResolve = !!user?.id && user?.orgId === organizationId;
+  const approved = comments.some(
+    (c) => !c.parentId && !c.resolvedAt && c.content?.startsWith('✅')
+  );
 
   const threads = useMemo(() => {
     const replies = comments.reduce((all, current) => {
@@ -501,8 +535,24 @@ export const CommentsComponents: FC<{ previewId: string }> = () => {
 
   return (
     <div className="flex flex-col gap-[16px]">
-      <div className="text-[18px] font-[600]">{t('comments', 'Comments')}</div>
-      <CommentComposer />
+      <div className="flex items-center justify-between gap-[12px]">
+        <h2 className="m-0 font-heading text-[17px] font-[600] text-[#111214]">
+          {t('comments', 'Comments')}
+        </h2>
+        <span
+          className={clsx(
+            'px-[10px] py-[4px] rounded-full text-[12px] font-[600]',
+            approved
+              ? 'bg-[#e8f6ee] text-[#1f7a4d]'
+              : 'bg-[#fff4e0] text-[#8a5a00]'
+          )}
+        >
+          {approved
+            ? t('paragon_status_approved', 'Approved')
+            : t('paragon_status_pending', 'Pending approval')}
+        </span>
+      </div>
+      <CommentComposer withApproval={true} />
       {!isLoading && !threads.length && (
         <div className="text-[13px] text-textItemBlur">
           {t(
