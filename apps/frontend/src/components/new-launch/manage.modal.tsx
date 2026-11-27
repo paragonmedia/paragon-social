@@ -1560,6 +1560,10 @@ After using the addPostFor{num} it will create a new addPostContentFor{num+ 1} f
 `}
         labels={{
           title: t('your_assistant', 'Your Assistant'),
+          placeholder: t(
+            'paragon_assistant_placeholder',
+            'Ask it to improve, shorten or translate your post…'
+          ),
           initial: t(
             'assistant_initial_message',
             'Hi! I can help you to refine your social media posts.'

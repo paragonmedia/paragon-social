@@ -1243,6 +1243,26 @@ export class InstagramProvider
       case 'replies': {
         return 'Replies';
       }
+
+      case 'profile_views': {
+        return 'Profile Views';
+      }
+
+      case 'accounts_engaged': {
+        return 'Accounts Engaged';
+      }
+
+      case 'total_interactions': {
+        return 'Total Interactions';
+      }
+
+      case 'website_clicks': {
+        return 'Website Clicks';
+      }
+
+      case 'profile_links_taps': {
+        return 'Profile Link Taps';
+      }
     }
 
     return '';
@@ -1294,6 +1314,56 @@ export class InstagramProvider
         ],
       }))
     );
+
+    // Paragon Social: extra account totals and the followers / non-followers
+    // split. Each request is separate and optional, so a metric Meta does not
+    // return for an account never hides the analytics above.
+    const today = dayjs().format('YYYY-MM-DD');
+    try {
+      const { data: data3 } = await (
+        await fetch(
+          `https://${type}/${META_GRAPH_API_VERSION}/${id}/insights?metric_type=total_value&metric=profile_views,accounts_engaged,total_interactions,website_clicks,profile_links_taps&access_token=${accessToken}&period=day&since=${since}&until=${until}`
+        )
+      ).json();
+      analytics.push(
+        ...(data3 || [])
+          .filter((d: any) => d?.total_value?.value !== undefined)
+          .map((d: any) => ({
+            label: this.setTitle(d.name),
+            percentageChange: 0,
+            data: [{ total: d.total_value.value, date: today }],
+          }))
+      );
+    } catch (err) {
+      console.error('Instagram account totals:', err);
+    }
+
+    try {
+      const { data: data4 } = await (
+        await fetch(
+          `https://${type}/${META_GRAPH_API_VERSION}/${id}/insights?metric_type=total_value&metric=reach,views&breakdown=follow_type&access_token=${accessToken}&period=day&since=${since}&until=${until}`
+        )
+      ).json();
+      for (const metric of data4 || []) {
+        const results =
+          metric?.total_value?.breakdowns?.[0]?.results || [];
+        for (const result of results) {
+          const kind = result?.dimension_values?.[0];
+          if (kind !== 'FOLLOWER' && kind !== 'NON_FOLLOWER') {
+            continue;
+          }
+          analytics.push({
+            label: `${this.setTitle(metric.name)} (${
+              kind === 'FOLLOWER' ? 'followers' : 'non-followers'
+            })`,
+            percentageChange: 0,
+            data: [{ total: result.value, date: today }],
+          });
+        }
+      }
+    } catch (err) {
+      console.error('Instagram followers split:', err);
+    }
 
     return analytics;
   }

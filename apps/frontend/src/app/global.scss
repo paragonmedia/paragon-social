@@ -982,3 +982,9 @@ html[dir='rtl'] [dir='ltr'] {
     border-radius: 10px !important;
   }
 }
+
+/* Paragon Social: no third-party badge in the assistant panels */
+.poweredByContainer,
+.poweredBy {
+  display: none !important;
+}

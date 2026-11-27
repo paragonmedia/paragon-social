@@ -127,7 +127,18 @@ const useChannelPosts = (integrationId: string | undefined, days: number) => {
   );
 };
 
-const splitAnalytics = (data?: AnalyticsDataItem[]) => {
+// networks name their metrics in English ("Page Impressions"): each name gets
+// a translation key, so new metrics show as they come until translated
+export const metricLabel = (t: (key: string, fallback: string) => string, label: string) =>
+  t(
+    'paragon_metric_' + label.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, ''),
+    label
+  );
+
+const splitAnalytics = (
+  data: AnalyticsDataItem[] | undefined,
+  tr: (label: string) => string
+) => {
   const series: ParagonSeries[] = [];
   const totals: Array<{ label: string; value: number; average?: boolean }> = [];
   (Array.isArray(data) ? data : []).forEach((item) => {
@@ -135,10 +146,10 @@ const splitAnalytics = (data?: AnalyticsDataItem[]) => {
       .map((p) => ({ date: p.date, value: Number(p.total) || 0 }))
       .sort((a, b) => a.date.localeCompare(b.date));
     if (points.length > 1) {
-      series.push({ label: item.label, points, average: item.average });
+      series.push({ label: tr(item.label), points, average: item.average });
     } else {
       totals.push({
-        label: item.label,
+        label: tr(item.label),
         value: points[0]?.value || 0,
         average: item.average,
       });
@@ -374,7 +385,7 @@ const PostsInsights: FC<{ integrationId: string; days: number }> = ({
             >
               {labels.map((l) => (
                 <option key={l} value={l}>
-                  {l}
+                  {metricLabel(t, l)}
                 </option>
               ))}
             </select>
@@ -398,7 +409,7 @@ const PostsInsights: FC<{ integrationId: string; days: number }> = ({
                       c === metric && 'text-[#111214]'
                     )}
                   >
-                    {c}
+                    {metricLabel(t, c)}
                   </th>
                 ))}
               </tr>
@@ -462,7 +473,7 @@ const PostsInsights: FC<{ integrationId: string; days: number }> = ({
             subtitle={t(
               'paragon_analytics_best_time_hint',
               'Average {{metric}} by day and time, based on {{count}} posts',
-              { metric, count: posts.length }
+              { metric: metricLabel(t, metric || ''), count: posts.length }
             )}
           />
           {!!heat.best && (
@@ -497,7 +508,7 @@ const PostsInsights: FC<{ integrationId: string; days: number }> = ({
                       title={
                         v === undefined
                           ? ''
-                          : `${dayNames[day]} ${HOURS[bucket]}:00 · ${formatNumber(v)} ${metric}`
+                          : `${dayNames[day]} ${HOURS[bucket]}:00 · ${formatNumber(v)} ${metricLabel(t, metric || '')}`
                       }
                       className="block aspect-[1.6] rounded-[6px] transition-transform hover:scale-110"
                       style={{
@@ -532,7 +543,10 @@ export const RenderAnalytics: FC<{
 }> = ({ integration, date }) => {
   const t = useT();
   const { data, isLoading } = useChannelAnalytics(integration?.id, date);
-  const { series, totals } = useMemo(() => splitAnalytics(data), [data]);
+  const { series, totals } = useMemo(
+    () => splitAnalytics(data, (label) => metricLabel(t, label)),
+    [data, t]
+  );
   const color =
     PARAGON_NETWORK_COLORS[integration.identifier || integration.providerIdentifier] ||
     '#f93b4f';
@@ -676,7 +690,10 @@ export const ChannelSummaryCard: FC<{
 }> = ({ integration, date, onOpen }) => {
   const t = useT();
   const { data, isLoading } = useChannelAnalytics(integration?.id, date);
-  const { series, totals } = useMemo(() => splitAnalytics(data), [data]);
+  const { series, totals } = useMemo(
+    () => splitAnalytics(data, (label) => metricLabel(t, label)),
+    [data, t]
+  );
   const identifier = integration.identifier || integration.providerIdentifier;
   const color = PARAGON_NETWORK_COLORS[identifier] || '#f93b4f';
   const main = useMemo(
