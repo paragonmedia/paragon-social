@@ -75,7 +75,9 @@ export default async function Auth(
             </h1>
             <p className="m-0 text-[14px] text-[#5d616a]">
               {post[0].integration.name} ·{' '}
-              {t('paragon_review_scheduled', 'Scheduled for')}{' '}
+              {['PENDING', 'CHANGES'].includes(post[0].approvalStatus)
+                ? t('paragon_review_planned', 'Planned for')
+                : t('paragon_review_scheduled', 'Scheduled for')}{' '}
               <RenderPreviewDateClient date={post[0].publishDate} />
             </p>
             {post.map((p: any, index: number) => (

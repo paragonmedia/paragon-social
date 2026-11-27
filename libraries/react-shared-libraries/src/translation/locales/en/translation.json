@@ -1126,5 +1126,6 @@
   "paragon_approved_toast": "Approved. The post is scheduled.",
   "paragon_approved_toast_late": "Approved. The team will set a new date since the original one passed.",
   "paragon_changes_toast": "Thanks, the team got your changes.",
-  "paragon_team_waiting_client": "Waiting for the client to approve this post from this link."
+  "paragon_team_waiting_client": "Waiting for the client to approve this post from this link.",
+  "paragon_review_planned": "Planned for"
 }
