@@ -480,6 +480,9 @@ model Post {
   lastMessageId              String?
   intervalInDays             Int?
   error                      String?
+  approvalStatus             PostApproval              @default(NONE)
+  approvalBy                 String?
+  approvalAt                 DateTime?
   createdAt                  DateTime                  @default(now())
   updatedAt                  DateTime                  @updatedAt
   deletedAt                  DateTime?
@@ -1780,6 +1783,15 @@ enum State {
   PUBLISHED
   ERROR
   DRAFT
+}
+
+// Paragon Social: the client's approval of a post. NONE is a post that
+// doesn't wait for anyone, the default for every existing row.
+enum PostApproval {
+  NONE
+  PENDING
+  APPROVED
+  CHANGES
 }
 
 enum SubscriptionTier {

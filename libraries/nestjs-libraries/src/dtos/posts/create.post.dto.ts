@@ -118,6 +118,17 @@ export class CreatePostDto {
   @IsBoolean()
   republish?: boolean;
 
+  // Paragon Social: the post waits for the client's approval (saved as a
+  // draft until the client approves it from the preview link)
+  @IsOptional()
+  @IsBoolean()
+  requestApproval?: boolean;
+
+  // Paragon Social: schedule a post that was waiting for approval without it
+  @IsOptional()
+  @IsBoolean()
+  skipApproval?: boolean;
+
   @IsDefined()
   @IsDateString()
   date: string;

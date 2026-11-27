@@ -142,7 +142,10 @@ export default async function Auth(
             ))}
           </section>
           <aside className="flex-[1_1_340px] min-w-0 self-start bg-white border border-[#eceef1] rounded-[22px] p-[20px] lg:sticky lg:top-[16px]">
-            <CommentsComponents previewId={id} />
+            <CommentsComponents
+              previewId={id}
+              approvalStatus={post[0].approvalStatus}
+            />
           </aside>
         </div>
       </div>

@@ -123,8 +123,9 @@ const ReviewerNameForm: FC<{ onConfirm: (name: string) => void }> = ({
 const CommentComposer: FC<{
   parentId?: string;
   onDone?: () => void;
-  withApproval?: boolean;
-}> = ({ parentId, onDone, withApproval }) => {
+  // Paragon Social: the post waits for the client's answer
+  onApproval?: (status: 'APPROVED' | 'CHANGES', needsNewDate: boolean) => void;
+}> = ({ parentId, onDone, onApproval }) => {
   const t = useT();
   const user = useUser();
   const fetch = useFetch();
@@ -133,8 +134,10 @@ const CommentComposer: FC<{
   const { recaptchaSiteKey } = useVariables();
   const { previewId, pending, setPending, mutate } = usePreviewComments();
   const [loading, setLoading] = useState(false);
+  const [askingChanges, setAskingChanges] = useState(false);
   const form = useForm({ values: { content: '' } });
   const anchor = parentId ? null : pending;
+  const withApproval = !!onApproval && !parentId;
 
   const askForName = useCallback(
     () =>
@@ -159,6 +162,79 @@ const CommentComposer: FC<{
     [t]
   );
 
+  // the name (and captcha) of a reviewer that isn't logged in
+  const identify = useCallback(async () => {
+    let displayName: string | undefined;
+    let recaptchaToken: string | undefined;
+    if (!user?.id) {
+      const name = await askForName();
+      if (!name) {
+        return null;
+      }
+      displayName = name;
+
+      if (recaptchaSiteKey) {
+        const token = await loadRecaptchaToken(recaptchaSiteKey).catch(() => {
+          toast.show(
+            t('preview_comment_failed', 'Could not post the comment'),
+            'warning'
+          );
+          return null;
+        });
+        if (!token) {
+          return null;
+        }
+        recaptchaToken = token;
+      }
+    }
+    return { displayName, recaptchaToken };
+  }, [user?.id, recaptchaSiteKey, askForName]);
+
+  // Paragon Social: the client's answer goes to the approval route, which
+  // also leaves it as a comment
+  const answer = useCallback(
+    async (action: 'approve' | 'changes', content?: string) => {
+      const who = await identify();
+      if (!who) {
+        return;
+      }
+      setLoading(true);
+      try {
+        const response = await fetch(
+          `/public/posts/${previewId}/approval`,
+          {
+            method: 'POST',
+            body: JSON.stringify({
+              action,
+              ...(content ? { content } : {}),
+              displayName:
+                who.displayName || user?.name || user?.email || undefined,
+              ...(who.recaptchaToken
+                ? { recaptchaToken: who.recaptchaToken }
+                : {}),
+            }),
+          }
+        );
+        const body = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          toast.show(
+            body?.message ||
+              t('preview_comment_failed', 'Could not post the comment'),
+            'warning'
+          );
+          return;
+        }
+        form.reset({ content: '' });
+        setAskingChanges(false);
+        await mutate();
+        onApproval?.(body.approvalStatus, !!body.needsNewDate);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [identify, previewId, user, onApproval]
+  );
+
   const submit = useCallback(
     async (values: { content: string }) => {
       const content = values.content.trim();
@@ -166,29 +242,16 @@ const CommentComposer: FC<{
         return;
       }
 
-      let displayName: string | undefined;
-      let recaptchaToken: string | undefined;
-      if (!user?.id) {
-        const name = await askForName();
-        if (!name) {
-          return;
-        }
-        displayName = name;
-
-        if (recaptchaSiteKey) {
-          const token = await loadRecaptchaToken(recaptchaSiteKey).catch(() => {
-            toast.show(
-              t('preview_comment_failed', 'Could not post the comment'),
-              'warning'
-            );
-            return null;
-          });
-          if (!token) {
-            return;
-          }
-          recaptchaToken = token;
-        }
+      if (withApproval && askingChanges) {
+        await answer('changes', content);
+        return;
       }
+
+      const who = await identify();
+      if (!who) {
+        return;
+      }
+      const { displayName, recaptchaToken } = who;
 
       setLoading(true);
       try {
@@ -235,7 +298,16 @@ const CommentComposer: FC<{
         setLoading(false);
       }
     },
-    [user?.id, recaptchaSiteKey, previewId, parentId, anchor, askForName]
+    [
+      user?.id,
+      previewId,
+      parentId,
+      anchor,
+      identify,
+      withApproval,
+      askingChanges,
+      answer,
+    ]
   );
 
   return (
@@ -258,30 +330,27 @@ const CommentComposer: FC<{
           </div>
         )}
         {/* Paragon Social: the client approves or asks for changes */}
-        {withApproval && !parentId && (
+        {withApproval && (
           <div className="flex flex-wrap gap-[10px] mb-[6px]">
             <button
               type="button"
               disabled={loading}
-              onClick={() =>
-                submit({
-                  content: `✅ ${t('paragon_approved', 'Approved')}`,
-                })
-              }
+              onClick={() => answer('approve')}
               className="flex-1 h-[48px] rounded-[12px] bg-[#111214] hover:bg-[#2a2c31] disabled:opacity-50 text-white text-[15px] font-[600]"
             >
               {t('paragon_approve', 'Approve')}
             </button>
             <button
               type="button"
+              disabled={loading}
               onClick={() => {
-                form.setValue(
-                  'content',
-                  `✏️ ${t('paragon_changes_prefix', 'Changes:')} `
-                );
+                setAskingChanges(true);
                 form.setFocus('content');
               }}
-              className="flex-1 h-[48px] rounded-[12px] border border-[#dfe1e5] bg-white hover:bg-[#f6f7f8] text-[#111214] text-[15px] font-[600]"
+              className={clsx(
+                'flex-1 h-[48px] rounded-[12px] border bg-white hover:bg-[#f6f7f8] text-[#111214] text-[15px] font-[600]',
+                askingChanges ? 'border-[#111214]' : 'border-[#dfe1e5]'
+              )}
             >
               {t('paragon_request_changes', 'Request changes')}
             </button>
@@ -289,7 +358,11 @@ const CommentComposer: FC<{
         )}
         <Textarea
           label={
-            parentId ? t('reply', 'Reply') : t('add_a_comment', 'Add a comment')
+            parentId
+              ? t('reply', 'Reply')
+              : withApproval && askingChanges
+              ? t('paragon_what_to_change', 'What should change?')
+              : t('add_a_comment', 'Add a comment')
           }
           name="content"
           className="!min-h-[90px] resize-none"
@@ -327,8 +400,21 @@ const CommentComposer: FC<{
               {t('cancel', 'Cancel')}
             </Button>
           )}
+          {withApproval && askingChanges && (
+            <Button
+              type="button"
+              secondary={true}
+              onClick={() => setAskingChanges(false)}
+            >
+              {t('cancel', 'Cancel')}
+            </Button>
+          )}
           <Button type="submit" loading={loading}>
-            {parentId ? t('reply', 'Reply') : t('post', 'Post')}
+            {parentId
+              ? t('reply', 'Reply')
+              : withApproval && askingChanges
+              ? t('paragon_send_changes', 'Send changes')
+              : t('post', 'Post')}
           </Button>
         </div>
       </form>
@@ -496,13 +582,33 @@ const ThreadCard: FC<{
   );
 };
 
-export const CommentsComponents: FC<{ previewId: string }> = () => {
+export const CommentsComponents: FC<{
+  previewId: string;
+  approvalStatus?: string;
+}> = ({ approvalStatus }) => {
   const t = useT();
   const user = useUser();
+  const toast = useToaster();
   const { comments, isLoading, postIds, organizationId } = usePreviewComments();
   const canResolve = !!user?.id && user?.orgId === organizationId;
-  const approved = comments.some(
-    (c) => !c.parentId && !c.resolvedAt && c.content?.startsWith('✅')
+  // Paragon Social: the post's approval, kept in sync with the client's answer
+  const [approval, setApproval] = useState(approvalStatus || 'NONE');
+  const waiting = approval === 'PENDING' || approval === 'CHANGES';
+  const onApproval = useCallback(
+    (status: 'APPROVED' | 'CHANGES', needsNewDate: boolean) => {
+      setApproval(status);
+      toast.show(
+        status === 'APPROVED'
+          ? needsNewDate
+            ? t(
+                'paragon_approved_toast_late',
+                'Approved. The team will set a new date since the original one passed.'
+              )
+            : t('paragon_approved_toast', 'Approved. The post is scheduled.')
+          : t('paragon_changes_toast', 'Thanks, the team got your changes.')
+      );
+    },
+    [t]
   );
 
   const threads = useMemo(() => {
@@ -539,20 +645,24 @@ export const CommentsComponents: FC<{ previewId: string }> = () => {
         <h2 className="m-0 font-heading text-[17px] font-[600] text-[#111214]">
           {t('comments', 'Comments')}
         </h2>
-        <span
-          className={clsx(
-            'px-[10px] py-[4px] rounded-full text-[12px] font-[600]',
-            approved
-              ? 'bg-[#e8f6ee] text-[#1f7a4d]'
-              : 'bg-[#fff4e0] text-[#8a5a00]'
-          )}
-        >
-          {approved
-            ? t('paragon_status_approved', 'Approved')
-            : t('paragon_status_pending', 'Pending approval')}
-        </span>
+        {approval !== 'NONE' && (
+          <span
+            className={clsx(
+              'px-[10px] py-[4px] rounded-full text-[12px] font-[600]',
+              approval === 'APPROVED'
+                ? 'bg-[#e8f6ee] text-[#1f7a4d]'
+                : 'bg-[#fff4e0] text-[#8a5a00]'
+            )}
+          >
+            {approval === 'APPROVED'
+              ? t('paragon_status_approved', 'Approved')
+              : approval === 'CHANGES'
+              ? t('paragon_changes_requested', 'Changes requested')
+              : t('paragon_status_pending', 'Pending approval')}
+          </span>
+        )}
       </div>
-      <CommentComposer withApproval={true} />
+      <CommentComposer {...(waiting ? { onApproval } : {})} />
       {!isLoading && !threads.length && (
         <div className="text-[13px] text-textItemBlur">
           {t(

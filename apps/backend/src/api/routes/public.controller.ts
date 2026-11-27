@@ -26,7 +26,10 @@ import { promisify } from 'util';
 import { OnlyURL } from '@gitroom/nestjs-libraries/dtos/webhooks/webhooks.dto';
 import { isSafePublicHttpsUrl } from '@gitroom/nestjs-libraries/dtos/webhooks/webhook.url.validator';
 import { ssrfSafeDispatcher } from '@gitroom/nestjs-libraries/dtos/webhooks/ssrf.safe.dispatcher';
-import { CreatePublicCommentDto } from '@gitroom/nestjs-libraries/dtos/comments/add.comment.dto';
+import {
+  CreatePublicCommentDto,
+  PostApprovalDto,
+} from '@gitroom/nestjs-libraries/dtos/comments/add.comment.dto';
 
 const pump = promisify(pipeline);
 
@@ -85,6 +88,16 @@ export class PublicController {
     @RealIP() ip: string
   ) {
     return this._postsService.createPublicComment(postId, body, null, ip);
+  }
+
+  // Paragon Social: the client approves the post or asks for changes
+  @Post(`/posts/:id/approval`)
+  async answerApproval(
+    @Param('id') postId: string,
+    @Body() body: PostApprovalDto,
+    @RealIP() ip: string
+  ) {
+    return this._postsService.answerApproval(postId, body, null, ip);
   }
 
   @Post('/t')

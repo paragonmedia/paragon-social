@@ -1109,10 +1109,21 @@
   "paragon_changes_prefix": "Cambios:",
   "paragon_request_changes": "Pedir cambios",
   "paragon_status_approved": "Aprobado",
-  "paragon_status_pending": "Pendiente de aprobar",
+  "paragon_status_pending": "Esperando aprobación",
   "paragon_review_for": "Vista para",
   "paragon_review_title": "Revisa esta publicación",
   "paragon_review_scheduled": "Programada para",
   "paragon_show_password": "Mostrar contraseña",
-  "paragon_hide_password": "Ocultar contraseña"
+  "paragon_hide_password": "Ocultar contraseña",
+  "paragon_send_for_approval": "Enviar a aprobación",
+  "paragon_schedule_without_approval": "Programar sin aprobación",
+  "paragon_sent_for_approval": "Enviado a aprobación. Comparte el link de vista previa con tu cliente.",
+  "paragon_waiting_approval": "Esperando aprobación",
+  "paragon_changes_requested": "Cambios pedidos",
+  "paragon_approved_needs_date": "Aprobada, falta nueva fecha",
+  "paragon_what_to_change": "¿Qué hay que cambiar?",
+  "paragon_send_changes": "Enviar cambios",
+  "paragon_approved_toast": "Aprobada. La publicación quedó programada.",
+  "paragon_approved_toast_late": "Aprobada. Como la fecha ya pasó, el equipo le pondrá una nueva.",
+  "paragon_changes_toast": "Gracias, el equipo recibió tus cambios."
 }

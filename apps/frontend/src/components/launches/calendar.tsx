@@ -1294,8 +1294,17 @@ const CalendarItem: FC<{
   // Paragon Social: post card from the design (network dot + time, text, status)
   const networkColor =
     PARAGON_NETWORK_COLORS[post.integration?.providerIdentifier] || '#5d616a';
+  // Paragon Social: the client's approval
+  const approval = (post as any).approvalStatus as string | undefined;
+  const waitingClient = approval === 'PENDING' || approval === 'CHANGES';
   const stateLabel =
-    state === 'DRAFT'
+    approval === 'PENDING' && state === 'DRAFT'
+      ? t('paragon_waiting_approval', 'Waiting for approval')
+      : approval === 'CHANGES' && state === 'DRAFT'
+      ? t('paragon_changes_requested', 'Changes requested')
+      : approval === 'APPROVED' && state === 'DRAFT'
+      ? t('paragon_approved_needs_date', 'Approved, needs a new date')
+      : state === 'DRAFT'
       ? t('draft', 'Draft')
       : state === 'PUBLISHED'
       ? t('published', 'Published')
@@ -1365,7 +1374,11 @@ const CalendarItem: FC<{
         onPointerMove={spot}
         className={clsx(
           'paragon-spot rounded-[10px] px-[10px] py-[8px] bg-[#f8f9fa] border flex flex-col gap-[4px] cursor-pointer text-start',
-          state === 'ERROR' ? 'border-[#f5b5bd]' : 'border-[#eceef1]',
+          state === 'ERROR'
+            ? 'border-[#f5b5bd]'
+            : waitingClient && state === 'DRAFT'
+            ? 'border-[#f3d28a] !bg-[#fffaf0]'
+            : 'border-[#eceef1]',
           display === 'month' &&
             'mobile:p-[4px] mobile:items-center mobile:justify-center',
           isBeforeNow && state !== 'PUBLISHED' && 'opacity-60'
@@ -1411,7 +1424,11 @@ const CalendarItem: FC<{
         <div
           className={clsx(
             'flex items-center gap-[6px] text-[11px]',
-            state === 'ERROR' ? 'text-[#d42a3e]' : 'text-[#5d616a]',
+            state === 'ERROR'
+              ? 'text-[#d42a3e]'
+              : waitingClient && state === 'DRAFT'
+              ? 'text-[#8a5a00] font-[600]'
+              : 'text-[#5d616a]',
             display === 'month' && 'mobile:hidden'
           )}
           {...(state === 'ERROR'

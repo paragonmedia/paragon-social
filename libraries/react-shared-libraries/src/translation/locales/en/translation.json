@@ -1109,10 +1109,21 @@
   "paragon_changes_prefix": "Changes:",
   "paragon_request_changes": "Request changes",
   "paragon_status_approved": "Approved",
-  "paragon_status_pending": "Pending approval",
+  "paragon_status_pending": "Waiting for approval",
   "paragon_review_for": "View for",
   "paragon_review_title": "Review this post",
   "paragon_review_scheduled": "Scheduled for",
   "paragon_show_password": "Show password",
-  "paragon_hide_password": "Hide password"
+  "paragon_hide_password": "Hide password",
+  "paragon_send_for_approval": "Send for approval",
+  "paragon_schedule_without_approval": "Schedule without approval",
+  "paragon_sent_for_approval": "Sent for approval. Share the preview link with your client.",
+  "paragon_waiting_approval": "Waiting for approval",
+  "paragon_changes_requested": "Changes requested",
+  "paragon_approved_needs_date": "Approved, needs a new date",
+  "paragon_what_to_change": "What should change?",
+  "paragon_send_changes": "Send changes",
+  "paragon_approved_toast": "Approved. The post is scheduled.",
+  "paragon_approved_toast_late": "Approved. The team will set a new date since the original one passed.",
+  "paragon_changes_toast": "Thanks, the team got your changes."
 }

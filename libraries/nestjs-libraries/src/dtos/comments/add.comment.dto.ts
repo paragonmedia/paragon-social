@@ -1,5 +1,6 @@
 import {
   IsBoolean,
+  IsIn,
   IsInt,
   IsOptional,
   IsString,
@@ -53,4 +54,25 @@ export class CreatePublicCommentDto extends AddCommentDto {
 export class ResolveCommentDto {
   @IsBoolean()
   resolved: boolean;
+}
+
+// Paragon Social: the client's answer from the preview link
+export class PostApprovalDto {
+  @IsIn(['approve', 'changes'])
+  action: 'approve' | 'changes';
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(2000)
+  content?: string;
+
+  @IsOptional()
+  @IsString()
+  @MinLength(1)
+  @MaxLength(80)
+  displayName?: string;
+
+  @IsOptional()
+  @IsString()
+  recaptchaToken?: string;
 }

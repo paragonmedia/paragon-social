@@ -383,6 +383,13 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
     return;
   }, [existingData, mutate, modal, integrations, date, channelDates]);
 
+  // Paragon Social: "send for approval" saves a draft that waits for the
+  // client; a post that waits can still be scheduled without the approval
+  const approvalMode = useRef<'request' | null>(null);
+  const waitingApproval = ['PENDING', 'CHANGES'].includes(
+    existingData?.posts?.[0]?.approvalStatus
+  );
+
   const schedule = useCallback(
     (type: 'draft' | 'now' | 'schedule' | 'update') => async () => {
       let republish = false;
@@ -779,9 +786,11 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
           return;
         }
 
-        // a channel saved as a draft gets these checks once it's scheduled
+        // a channel saved as a draft gets these checks once it's scheduled,
+        // a post sent for approval is scheduled by the client's approval
         const notDrafts = checkAllValid.filter(
-          (p: any) => saveTypeOf(p.id) !== 'draft'
+          (p: any) =>
+            saveTypeOf(p.id) !== 'draft' || approvalMode.current === 'request'
         );
 
         for (const item of notDrafts) {
@@ -865,8 +874,15 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
         }
       }
 
+      const requestApproval = approvalMode.current === 'request';
+      approvalMode.current = null;
       const data = {
         type,
+        ...(requestApproval ? { requestApproval: true } : {}),
+        ...(!requestApproval &&
+        (type === 'now' || (type === 'schedule' && waitingApproval))
+          ? { skipApproval: true }
+          : {}),
         ...(republish ? { republish } : {}),
         ...(repeater ? { inter: repeater } : {}),
         tags,
@@ -938,7 +954,12 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
         if (!addEditSets) {
           mutate();
           toaster.show(
-            !existingData.integration
+            requestApproval
+              ? t(
+                  'paragon_sent_for_approval',
+                  'Sent for approval. Share the preview link with your client.'
+                )
+              : !existingData.integration
               ? t('added_successfully', 'Added successfully')
               : t('updated_successfully', 'Updated successfully')
           );
@@ -969,8 +990,19 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
     ]
   );
 
+  const sendForApproval = useCallback(async () => {
+    approvalMode.current = 'request';
+    try {
+      await schedule('draft')();
+    } finally {
+      approvalMode.current = null;
+    }
+  }, [schedule]);
+
   const scheduleLabel = dummy
     ? t('create_output', 'Create output')
+    : waitingApproval
+    ? t('paragon_schedule_without_approval', 'Schedule without approval')
     : !existingData?.integration
     ? t('add_to_calendar', 'Add to calendar')
     : existingData?.posts?.[0]?.state === 'DRAFT'
@@ -986,6 +1018,15 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
         },
       ]
     : [
+        ...(!dummy
+          ? [
+              {
+                label: t('paragon_send_for_approval', 'Send for approval'),
+                variant: 'secondary' as const,
+                onClick: sendForApproval,
+              },
+            ]
+          : []),
         {
           label: scheduleLabel,
           variant: 'primary',
@@ -1141,6 +1182,22 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
                 )}
                 <div className={clsx(loading && 'invisible')}>
                   {t('save_as_draft', 'Save as Draft')}
+                </div>
+              </button>
+            )}
+            {!addEditSets && !dummy && (
+              <button
+                disabled={
+                  selectedIntegrations.length === 0 || loading || locked
+                }
+                onClick={sendForApproval}
+                className="relative cursor-pointer disabled:cursor-not-allowed disabled:opacity-60 px-[18px] h-[44px] bg-[#111214] hover:bg-[#2a2c31] text-white justify-center items-center flex gap-[8px] rounded-[12px] text-[14px] font-[600]"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={clsx(loading && 'invisible')}>
+                  <path d="M20 6 9 17l-5-5" />
+                </svg>
+                <div className={clsx(loading && 'invisible')}>
+                  {t('paragon_send_for_approval', 'Send for approval')}
                 </div>
               </button>
             )}

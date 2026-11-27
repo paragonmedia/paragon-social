@@ -6,6 +6,7 @@ import {
   CreationMethod,
   Integration,
   Post,
+  PostApproval,
   State,
 } from '@prisma/client';
 import { GetPostsDto } from '@gitroom/nestjs-libraries/dtos/posts/get.posts.dto';
@@ -187,7 +188,9 @@ export class PostsRepository {
     }
   }
 
-  async getPosts(orgId: string, query: GetPostsDto) {
+  // withApproval: the dashboard calendar shows the client's approval, the
+  // public API and the agent tools keep the fields they had
+  async getPosts(orgId: string, query: GetPostsDto, withApproval = false) {
     // Use the provided start and end dates directly
     const startDate = dayjs.utc(query.startDate).toDate();
     const endDate = dayjs.utc(query.endDate).toDate();
@@ -238,6 +241,7 @@ export class PostsRepository {
         group: true,
         creationMethod: true,
         settings: true,
+        ...(withApproval ? { approvalStatus: true } : {}),
         tags: {
           where: {
             tag: {
@@ -555,6 +559,91 @@ export class PostsRepository {
       data: {
         releaseId,
         releaseURL,
+      },
+    });
+  }
+
+  // Paragon Social: what the posts looked like before an edit, to know if the
+  // client has to approve them again
+  getPostsApproval(orgId: string, ids: string[]) {
+    return this._post.model.post.findMany({
+      where: {
+        organizationId: orgId,
+        id: { in: ids },
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+        content: true,
+        image: true,
+        approvalStatus: true,
+      },
+    });
+  }
+
+  setPostsApproval(orgId: string, ids: string[], approvalStatus: PostApproval) {
+    return this._post.model.post.updateMany({
+      where: {
+        organizationId: orgId,
+        id: { in: ids },
+        deletedAt: null,
+      },
+      data: {
+        approvalStatus,
+        ...(approvalStatus === 'APPROVED'
+          ? {}
+          : { approvalBy: null, approvalAt: null }),
+      },
+    });
+  }
+
+  // the channels saved together with the post that wait for the client
+  getPostsWaitingApproval(
+    orgId: string,
+    batchId: string | null,
+    group: string
+  ) {
+    return this._post.model.post.findMany({
+      where: {
+        organizationId: orgId,
+        deletedAt: null,
+        parentPostId: null,
+        approvalStatus: { in: ['PENDING', 'CHANGES'] },
+        ...(batchId ? { batchId } : { group }),
+      },
+      select: {
+        id: true,
+        group: true,
+        state: true,
+        publishDate: true,
+        integration: {
+          select: {
+            providerIdentifier: true,
+          },
+        },
+      },
+    });
+  }
+
+  // the client's answer, on every post of the channel's thread
+  answerApproval(
+    orgId: string,
+    groups: string[],
+    approvalStatus: PostApproval,
+    approvalBy: string,
+    queue: boolean
+  ) {
+    return this._post.model.post.updateMany({
+      where: {
+        organizationId: orgId,
+        group: { in: groups },
+        deletedAt: null,
+      },
+      data: {
+        approvalStatus,
+        approvalBy,
+        approvalAt: new Date(),
+        ...(queue ? { state: 'QUEUE' as const } : {}),
       },
     });
   }

@@ -8,12 +8,14 @@ import { PostsRepository } from '@gitroom/nestjs-libraries/database/prisma/posts
 import { CreatePostDto } from '@gitroom/nestjs-libraries/dtos/posts/create.post.dto';
 import dayjs from 'dayjs';
 import { IntegrationManager } from '@gitroom/nestjs-libraries/integrations/integration.manager';
+import { NotificationService } from '@gitroom/nestjs-libraries/database/prisma/notifications/notification.service';
 import {
   Integration,
   Post,
   Media,
   From,
   CreationMethod,
+  PostApproval,
   State,
 } from '@prisma/client';
 import { GetPostsDto } from '@gitroom/nestjs-libraries/dtos/posts/get.posts.dto';
@@ -56,7 +58,10 @@ import { validate } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
 import { stripHtmlValidation } from '@gitroom/helpers/utils/strip.html.validation';
 import { postContentPlainText } from '@gitroom/helpers/utils/sanitize.post.content';
-import { CreatePublicCommentDto } from '@gitroom/nestjs-libraries/dtos/comments/add.comment.dto';
+import {
+  CreatePublicCommentDto,
+  PostApprovalDto,
+} from '@gitroom/nestjs-libraries/dtos/comments/add.comment.dto';
 import { countLength } from '@gitroom/helpers/utils/count.length';
 
 type PostWithConditionals = Post & {
@@ -75,7 +80,8 @@ export class PostsService {
     private _shortLinkService: ShortLinkService,
     private _openaiService: OpenaiService,
     private _temporalService: TemporalService,
-    private _refreshIntegrationService: RefreshIntegrationService
+    private _refreshIntegrationService: RefreshIntegrationService,
+    private _notificationService: NotificationService
   ) {}
 
   searchForMissingThreeHoursPosts() {
@@ -497,7 +503,7 @@ export class PostsService {
 
   async getPostsMinified(orgId: string, query: GetPostsDto) {
     return minifyPosts({
-      posts: await this._postRepository.getPosts(orgId, query),
+      posts: await this._postRepository.getPosts(orgId, query, true),
     });
   }
 
@@ -1202,8 +1208,50 @@ export class PostsService {
         content: removeLinks ? stripLinks(updateContent[i]) : updateContent[i],
       }));
 
+      // Paragon Social: the client's approval. A post sent for approval waits
+      // as a draft; an approved post that is edited waits for the client
+      // again, unless the save explicitly skips the approval.
+      const savedIds = (post.value || [])
+        .map((p) => p.id)
+        .filter(Boolean) as string[];
+      const before = savedIds.length
+        ? await this._postRepository.getPostsApproval(orgId, savedIds)
+        : [];
+      const previousApproval =
+        before.find((p) => p.approvalStatus !== 'NONE')?.approvalStatus ||
+        'NONE';
+      const mediaOf = (image: any) => {
+        try {
+          const list = typeof image === 'string' ? JSON.parse(image) : image;
+          return (list || []).map((m: any) => m?.path || m?.id).join('|');
+        } catch (err) {
+          return '';
+        }
+      };
+      const changed =
+        before.length !== (post.value || []).length ||
+        (post.value || []).some((value) => {
+          const old = before.find((p) => p.id === value.id);
+          return (
+            !old ||
+            old.content !== value.content ||
+            mediaOf(old.image) !== mediaOf(value.image)
+          );
+        });
+      const approval: PostApproval =
+        body.requestApproval && body.type === 'draft'
+          ? 'PENDING'
+          : body.skipApproval || previousApproval === 'NONE'
+          ? 'NONE'
+          : !changed &&
+            (previousApproval === 'APPROVED' || previousApproval === 'CHANGES')
+          ? previousApproval
+          : 'PENDING';
+      const saveType =
+        approval === 'PENDING' || approval === 'CHANGES' ? 'draft' : body.type;
+
       const { posts } = await this._postRepository.createOrUpdatePost(
-        body.type,
+        saveType,
         orgId,
         body.type === 'now'
           ? dayjs().format('YYYY-MM-DDTHH:mm:00')
@@ -1225,7 +1273,15 @@ export class PostsService {
         posts.filter((p) => existingIds.includes(p.id))
       );
 
-      if (body.type !== 'update') {
+      if (approval !== 'NONE' || previousApproval !== 'NONE') {
+        await this._postRepository.setPostsApproval(
+          orgId,
+          posts.map((p) => p.id),
+          approval
+        );
+      }
+
+      if (saveType !== 'update') {
         this.startWorkflow(
           post.settings.__type.split('-')[0].toLowerCase(),
           posts[0].id,
@@ -1720,6 +1776,111 @@ export class PostsService {
         anchorQuote: hasStart ? body.anchorQuote : undefined,
       }
     );
+  }
+
+  // Paragon Social: the client approves the post from the preview link, or
+  // asks for changes. The answer is left as a comment with the client's name,
+  // and covers every channel the post was saved for. An approved post is
+  // scheduled when its date is still ahead; when the date already passed it
+  // stays a draft until the team picks a new date.
+  async answerApproval(
+    previewId: string,
+    body: PostApprovalDto,
+    userId: string | null,
+    ip: string
+  ) {
+    const posts = await this.getPostsRecursively(previewId, false);
+    const root = posts[0];
+    if (!root) {
+      throw new NotFoundException('Post not found');
+    }
+
+    const waiting = await this._postRepository.getPostsWaitingApproval(
+      root.organizationId,
+      root.batchId || null,
+      root.group
+    );
+    if (!waiting.length) {
+      throw new BadRequestException('This post is not waiting for approval');
+    }
+
+    const approve = body.action === 'approve';
+    const comment = approve
+      ? `✅ ${body.content?.trim() || 'Aprobado'}`
+      : `✏️ ${body.content?.trim() || 'Cambios pedidos'}`;
+    const created = await this.createPublicComment(
+      previewId,
+      {
+        content: comment,
+        displayName: body.displayName,
+        recaptchaToken: body.recaptchaToken,
+      } as CreatePublicCommentDto,
+      userId,
+      ip
+    );
+    const by = created?.displayName || body.displayName?.trim() || 'Cliente';
+
+    const ahead = waiting.filter((p) =>
+      dayjs.utc(p.publishDate).isAfter(dayjs.utc())
+    );
+    const passed = waiting.filter((p) => !ahead.includes(p));
+
+    if (approve) {
+      if (ahead.length) {
+        await this._postRepository.answerApproval(
+          root.organizationId,
+          ahead.map((p) => p.group),
+          'APPROVED',
+          by,
+          true
+        );
+      }
+      if (passed.length) {
+        await this._postRepository.answerApproval(
+          root.organizationId,
+          passed.map((p) => p.group),
+          'APPROVED',
+          by,
+          false
+        );
+      }
+      for (const post of ahead) {
+        await this.startWorkflow(
+          post.integration.providerIdentifier.split('-')[0].toLowerCase(),
+          post.id,
+          root.organizationId,
+          'QUEUE'
+        ).catch(() => {});
+      }
+    } else {
+      await this._postRepository.answerApproval(
+        root.organizationId,
+        waiting.map((p) => p.group),
+        'CHANGES',
+        by,
+        false
+      );
+    }
+
+    try {
+      await this._notificationService.inAppNotification(
+        root.organizationId,
+        approve
+          ? `${by} aprobó una publicación`
+          : `${by} pidió cambios en una publicación`,
+        approve
+          ? passed.length
+            ? `${by} aprobó la publicación, pero su fecha ya pasó: ponle una fecha nueva para que salga.`
+            : `${by} aprobó la publicación y quedó programada.`
+          : `${by} pidió cambios: ${body.content?.trim() || ''}`,
+        true
+      );
+    } catch (err) {}
+
+    return {
+      approvalStatus: approve ? 'APPROVED' : 'CHANGES',
+      needsNewDate: approve && !!passed.length,
+    };
   }
 
   private async verifyRecaptcha(token: string | undefined, ip: string) {
