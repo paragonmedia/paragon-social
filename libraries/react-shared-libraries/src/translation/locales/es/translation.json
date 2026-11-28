@@ -1127,5 +1127,7 @@
   "paragon_approved_toast_late": "Aprobada. Como la fecha ya pasó, el equipo le pondrá una nueva.",
   "paragon_changes_toast": "Gracias, el equipo recibió tus cambios.",
   "paragon_team_waiting_client": "Esperando a que el cliente apruebe esta publicación desde este link.",
-  "paragon_review_planned": "Para publicarse el"
+  "paragon_review_planned": "Para publicarse el",
+  "paragon_source_notice": "Paragon Social está basado en Postiz, software de código abierto con licencia AGPL-3.0.",
+  "paragon_source_code": "Código fuente"
 }

@@ -250,6 +250,21 @@ export const SettingsPopup: FC<{
         </FormProvider>
       </section>
       </div>
+      {/* AGPL-3.0: the people using the app can get its source code */}
+      <p className="m-0 text-[12px] text-[#8a8e96]">
+        {t(
+          'paragon_source_notice',
+          'Paragon Social is based on Postiz, open source software under the AGPL-3.0 license.'
+        )}{' '}
+        <a
+          href="https://github.com/paragonmedia/paragon-social"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline hover:text-[#111214]"
+        >
+          {t('paragon_source_code', 'Source code')}
+        </a>
+      </p>
     </div>
   );
 };
